@@ -59,6 +59,8 @@ start, so nothing is ever written to the unencrypted disk.
    curl -fsSL https://get.docker.com | sudo sh
    sudo usermod -aG docker $USER
    ```
+   If Docker came from the App Center (check with `snap list docker`), remove that version first with
+   `sudo snap remove --purge docker`. The snap version can't see the encrypted vault.
 2. Get the app and create your settings file:
    ```bash
    git clone <this-repository-url> ~/popia && cd ~/popia

@@ -30,6 +30,23 @@ is_mounted() { mountpoint -q "$VAULT_MOUNT"; }
 need_tools() {
   command -v cryptsetup >/dev/null || die "cryptsetup is not installed. Run: sudo apt install cryptsetup"
   command -v docker >/dev/null || die "Docker is not installed."
+  # Snap apps run in a sandbox that can't see /srv, so the snap Docker can't reach the vault.
+  if [[ "$(command -v docker)" == /snap/* ]] || snap list docker >/dev/null 2>&1; then
+    die "Docker is installed as a snap, which can't see $VAULT_MOUNT.
+Switch to Docker's official packages (the data in your vault is not affected):
+  sudo snap remove --purge docker
+  curl -fsSL https://get.docker.com | sudo sh
+  sudo usermod -aG docker \$USER      then log out and back in
+  scripts/popia-vault.sh unlock"
+  fi
+  local err
+  if ! err="$(docker info 2>&1 >/dev/null)"; then
+    case "$err" in
+      *"permission denied"*) die "You're not allowed to use Docker yet. Run: sudo usermod -aG docker \$USER  then log out and back in." ;;
+      *) die "Docker isn't running. Start it with: sudo systemctl enable --now docker
+(If that says 'Unit docker.service not found', install Docker: curl -fsSL https://get.docker.com | sudo sh)" ;;
+    esac
+  fi
 }
 
 set_env() {  # set_env KEY VALUE – add or replace a line in .env
@@ -94,7 +111,7 @@ cmd_create() {
 cmd_start() {
   say "Starting the app"
   "${COMPOSE[@]}" up -d --build
-  say "Open http://localhost:8000  –  when you're done, run: scripts/popia-vault.sh lock"
+  say "Open http://localhost:8765  –  when you're done, run: scripts/popia-vault.sh lock"
 }
 
 cmd_unlock() {

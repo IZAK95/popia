@@ -39,6 +39,14 @@ Switch to Docker's official packages (the data in your vault is not affected):
   sudo usermod -aG docker \$USER      then log out and back in
   scripts/popia-vault.sh unlock"
   fi
+  local err
+  if ! err="$(docker info 2>&1 >/dev/null)"; then
+    case "$err" in
+      *"permission denied"*) die "You're not allowed to use Docker yet. Run: sudo usermod -aG docker \$USER  then log out and back in." ;;
+      *) die "Docker isn't running. Start it with: sudo systemctl enable --now docker
+(If that says 'Unit docker.service not found', install Docker: curl -fsSL https://get.docker.com | sudo sh)" ;;
+    esac
+  fi
 }
 
 set_env() {  # set_env KEY VALUE – add or replace a line in .env

@@ -23,6 +23,8 @@ services:
       DEBUG: "0"
     entrypoint: []
     command: ["python", "manage.py", "backup_db", "--loop", "--keep-days", "30"]
+    healthcheck:
+      disable: true  # the web health check doesn't apply to the backup loop
     volumes:
       - app-data:/data
       - app-backups:/backups

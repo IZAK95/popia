@@ -31,6 +31,8 @@ services:
       REQUIRE_VAULT: ${REQUIRE_VAULT:-0}
     entrypoint: []
     command: ["python", "manage.py", "backup_db", "--loop", "--keep-days", "30"]
+    healthcheck:
+      disable: true  # the web health check doesn't apply to the backup loop
     volumes:
       - ${POPIA_DATA_DIR:-./data}:/data
       - ${POPIA_BACKUP_DIR:-./backups}:/backups

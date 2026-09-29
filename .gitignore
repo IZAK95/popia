@@ -2,7 +2,10 @@
 __pycache__/
 *.pyc
 db.sqlite3
-/data/
-/backups/
+# Keep the (empty) folders so a fresh clone owns them – Docker would otherwise create them as root.
+/data/*
+!/data/.gitkeep
+/backups/*
+!/backups/.gitkeep
 /staticfiles/
 .env

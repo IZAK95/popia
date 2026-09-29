@@ -1,0 +1,19 @@
+{% extends "auth_base.html" %}
+{% block title %}Set up two-factor authentication{% endblock %}
+{% block content %}
+<h1>Protect your account</h1>
+<p>Because this app stores personal information, a second step is required at every sign-in (POPIA s19 – security safeguards).</p>
+<ol class="steps">
+  <li>Install an authenticator app on your phone – e.g. <strong>Microsoft Authenticator</strong>, <strong>Google Authenticator</strong> or <strong>1Password</strong>.</li>
+  <li>In the app, tap <em>Add account</em> and scan this code:</li>
+</ol>
+<div class="qr"><img src="{{ qr }}" alt="QR code for authenticator app" width="200" height="200"></div>
+<details class="small"><summary>Can't scan? Enter this key manually</summary><code class="secret">{{ secret }}</code></details>
+<ol class="steps" start="3"><li>Type the 6-digit code the app shows:</li></ol>
+<form method="post">
+  {% csrf_token %}
+  {% include "includes/field.html" with field=form.token %}
+  <button class="btn btn-primary btn-block" type="submit">Verify and continue</button>
+</form>
+<form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="btn btn-link" type="submit">Cancel and sign out</button></form>
+{% endblock %}

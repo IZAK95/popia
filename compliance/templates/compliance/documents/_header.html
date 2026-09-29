@@ -1,0 +1,3 @@
+{% load compliance_tags %}<p class="doc-meta">{{ c.legal_name|ph:"Registered name" }}{% if c.registration_number %} (Reg. no. {{ c.registration_number }}){% endif %}</p>
+<h1>{{ title }}</h1>
+<p class="doc-meta">Version date: {{ today|date:"j F Y" }} · Legal reference: {{ ref }}</p>

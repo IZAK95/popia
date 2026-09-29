@@ -1,0 +1,65 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="POPIA Compliance Policy" ref="POPIA Act 4 of 2013; POPIA Regulations reg. 4" %}
+
+<h2>1. Purpose and scope</h2>
+<p>{{ c.legal_name|ph:"Registered name" }} ("the Company") respects the privacy of everyone whose personal information it handles. This policy sets out how the Company complies with the Protection of Personal Information Act 4 of 2013 ("POPIA") and forms part of its compliance framework in terms of regulation 4(1)(a) of the POPIA Regulations. It applies to all directors, employees, contractors and temporary staff, and to all personal information the Company processes – electronic or on paper – about employees, job applicants, customers, suppliers, their contact persons and any other person (natural or juristic).</p>
+
+<h2>2. Key terms</h2>
+<ul>
+  <li><strong>Personal information</strong> – any information relating to an identifiable living person or existing company, e.g. name, ID number, contact details, bank details, opinions, employment history.</li>
+  <li><strong>Special personal information</strong> – religious or philosophical beliefs, race or ethnic origin, trade union membership, political persuasion, health, sex life, biometric information, and criminal behaviour.</li>
+  <li><strong>Processing</strong> – anything done with personal information: collecting, recording, storing, using, sharing, archiving or destroying it.</li>
+  <li><strong>Data subject</strong> – the person the information is about.</li>
+  <li><strong>Operator</strong> – an outside party that processes personal information on the Company's behalf (e.g. payroll or cloud service provider).</li>
+</ul>
+
+<h2>3. Roles and responsibilities</h2>
+<ul>
+  <li><strong>Information Officer:</strong> {{ c.io_name|ph:"Information Officer name" }}{% if c.io_title %}, {{ c.io_title }}{% endif %} ({{ c.io_email|ph:"IO email" }}). Responsible for encouraging compliance, handling requests and complaints, working with the Information Regulator, maintaining this framework and continuously improving it, performing personal information impact assessments, and running staff awareness sessions (POPIA s55; reg. 4).</li>
+  {% if c.deputy_io_name %}<li><strong>Deputy Information Officer:</strong> {{ c.deputy_io_name }} ({{ c.deputy_io_email }}).</li>{% endif %}
+  <li><strong>Head of the Company:</strong> {{ c.head_name|ph:"Head of business" }} remains accountable for compliance.</li>
+  <li><strong>All staff:</strong> must follow this policy, only access personal information they need for their work, and report any suspected security compromise to the Information Officer immediately.</li>
+</ul>
+
+<h2>4. The eight conditions – rules for staff</h2>
+<ol>
+  <li><strong>Accountability.</strong> The Company is responsible for complying with POPIA and keeps records of its compliance (registers, training log, incident log).</li>
+  <li><strong>Processing limitation.</strong> Only process personal information lawfully, for a valid reason (contract, legal obligation, legitimate interest or consent), and collect only what is needed. Collect directly from the person where possible.</li>
+  <li><strong>Purpose specification.</strong> Collect for a specific, defined purpose. Keep records only as long as set out in the Records Retention Schedule, then destroy them securely.</li>
+  <li><strong>Further processing limitation.</strong> Don't use information for a new purpose that is incompatible with the original one without consent.</li>
+  <li><strong>Information quality.</strong> Keep information accurate, complete and up to date.</li>
+  <li><strong>Openness.</strong> Tell people what we collect and why (privacy notices) and keep the Record of Processing and PAIA manual current.</li>
+  <li><strong>Security safeguards.</strong> Protect information against loss, damage and unauthorised access (section 6 below).</li>
+  <li><strong>Data subject participation.</strong> Respect people's rights to access, correct, delete and object (section 8 below).</li>
+</ol>
+
+<h2>5. Special personal information and children</h2>
+<p>Special personal information (e.g. health information in sick notes or medical aid records, biometrics) and information about children may only be processed where POPIA permits (s26–s35) – for example to comply with employment law, or with explicit consent. Such information must be kept separately, accessed only by authorised persons who are bound to confidentiality, and never shared without the Information Officer's approval. Health information is also handled in accordance with the Regulations relating to the processing of health information (2026).</p>
+
+<h2>6. Security measures</h2>
+<ul>
+  <li>Use individual accounts with strong passwords and multi-factor authentication for email, cloud, payroll, accounting and banking systems. Never share passwords.</li>
+  <li>Company laptops and phones must be encrypted, screen-locked and kept up to date.</li>
+  <li>Paper records containing personal information are kept in locked storage and shredded when no longer needed. Keep a clear desk.</li>
+  <li>Double-check recipients before emailing personal information; password-protect sensitive attachments such as payslips.</li>
+  <li>Be alert to phishing: never click unexpected links or change banking details based on an email alone.</li>
+  <li>Backups are made regularly and restores are tested.</li>
+  <li>Access rights are reviewed quarterly and removed on the day an employee leaves.</li>
+</ul>
+
+<h2>7. Operators and cross-border transfers</h2>
+<p>Personal information may only be shared with an operator under a written agreement that obliges the operator to keep it confidential, apply appropriate security measures and notify the Company of any security compromise (s20–s21). Personal information may only be transferred outside South Africa under one of the grounds in section 72 of POPIA (e.g. to a recipient bound by laws or agreements providing adequate protection). All operators and transfers are recorded in the Operators register.</p>
+
+<h2>8. Requests from data subjects</h2>
+<p>Any request to access, correct or delete personal information, or objection to processing or direct marketing – however it is received (email, phone, WhatsApp, letter or in person) – must be passed to the Information Officer on the same day. Requests are logged, the requester's identity is verified, and a response is given within 30 days (PAIA s56; POPIA s23–s25, s11(3)).</p>
+
+<h2>9. Security compromises (breaches)</h2>
+<p>Anyone who suspects that personal information has been lost, stolen, accessed or disclosed without authorisation must report it to the Information Officer immediately. The Information Officer follows the Security Compromise Response Plan and, where there are reasonable grounds to believe that personal information has been accessed or acquired by an unauthorised person, notifies the Information Regulator via its eServices portal and the affected persons as soon as reasonably possible (s22).</p>
+
+<h2>10. Direct marketing</h2>
+<p>Electronic direct marketing (email, SMS, WhatsApp, telephone) is only sent to people who have opted in, or to existing customers about similar products, and every message includes a free opt-out. Opt-outs are honoured promptly (s69).</p>
+
+<h2>11. Training, monitoring and review</h2>
+<p>All staff receive POPIA awareness training on joining and at least annually. The Information Officer reviews this policy, the registers and the risk assessment at least annually, and after any significant incident or change, to continuously improve the framework. Breaches of this policy may lead to disciplinary action.</p>
+
+{% include "compliance/documents/_sig.html" with left="Head of the Company" left_name=c.head_name right="Information Officer" right_name=c.io_name %}

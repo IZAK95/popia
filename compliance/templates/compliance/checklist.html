@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load compliance_tags %}
+{% block title %}Compliance checklist{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Compliance checklist</h1>
+  <p class="lead">Everything POPIA and PAIA require of a private business, turned into steps. Open an item to read why it matters and how to do it, then record what you did as evidence. Items marked <span class="badge info">Essential</span> are legal must-haves; do those first.</p>
+</div>
+<div class="callout">
+  <strong>{{ overall.done }} of {{ overall.total }} applicable items done ({{ overall.percent }}%).</strong>
+  <progress value="{{ overall.done }}" max="{{ overall.total|default:1 }}"></progress>
+</div>
+<div class="filters">
+  <a href="?" class="{% if not status %}on{% endif %}">All</a>
+  {% for code, label in statuses %}<a href="?status={{ code }}" class="{% if status == code %}on{% endif %}">{{ label }}</a>{% endfor %}
+</div>
+{% for group in groups %}
+  <section class="card" id="{{ group.items.0.area }}">
+    <h2>{{ group.label }} <span class="muted small">{{ group.done }}/{{ group.total }}</span></h2>
+    <ul class="check-list">
+      {% for item in group.items %}
+        <li><a href="{% url 'compliance:checklist_item' item.pk %}">
+          <span class="check-code">{{ item.code }}</span>
+          <span><span class="check-title{% if item.status == 'done' %} done{% endif %}">{{ item.title }}</span>{% if item.essential %}<span class="tag">Essential</span>{% endif %}</span>
+          <span class="badge {% status_class item.status %}">{{ item.get_status_display }}</span>
+        </a></li>
+      {% endfor %}
+    </ul>
+  </section>
+{% empty %}
+  <p class="empty">No items match this filter.</p>
+{% endfor %}
+{% endblock %}

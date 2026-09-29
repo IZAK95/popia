@@ -1,0 +1,54 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Security Compromise Response Plan" ref="POPIA s19, s22" %}
+<p>This plan tells everyone at {{ c.legal_name|ph:"Registered name" }} what to do when personal information may have been lost, stolen, accessed, disclosed, altered or destroyed without authorisation. Speed matters: POPIA requires notification "as soon as reasonably possible".</p>
+
+<h2>Examples of security compromises</h2>
+<ul>
+  <li>A laptop, phone, USB drive or paper file is lost or stolen</li>
+  <li>A phishing email led to someone entering their password, or an account was hacked</li>
+  <li>Ransomware or other malware on a computer or server</li>
+  <li>An email with personal information (e.g. payslips, CVs, customer lists) sent to the wrong person</li>
+  <li>A service provider tells us they had a breach</li>
+  <li>Someone accessed information they were not authorised to see</li>
+</ul>
+
+<h2>Step 1 – Report immediately (all staff)</h2>
+<p>Tell the Information Officer at once – {{ c.io_name|ph:"Information Officer name" }}, {{ c.io_email|ph:"IO email" }}{% if c.io_phone %}, {{ c.io_phone }}{% endif %}. Don't try to investigate alone, don't delete evidence, and don't discuss the incident outside the Company.</p>
+
+<h2>Step 2 – Contain (within hours)</h2>
+<ul>
+  <li>Reset passwords, force sign-out of all sessions and confirm MFA is on</li>
+  <li>Remote-wipe lost devices; disconnect infected computers from the network (don't switch off)</li>
+  <li>Ask anyone who wrongly received information to delete it and confirm in writing</li>
+  <li>Contact IT support and any affected service provider</li>
+  <li>Report theft or crime to SAPS and record the case number</li>
+</ul>
+
+<h2>Step 3 – Log and assess (within 24–48 hours)</h2>
+<p>Record the incident in the incident register. Establish: what happened and when; what personal information was involved; whose and how many people; whether it was encrypted; and what harm could result (identity theft, fraud, financial loss, discrimination, embarrassment).</p>
+<p><strong>Decision:</strong> are there reasonable grounds to believe personal information was accessed or acquired by an unauthorised person? If <strong>yes</strong> (or you can't rule it out), notification is required. POPIA has no "low risk" exemption.</p>
+
+<h2>Step 4 – Notify the Information Regulator</h2>
+<p>Submit the security compromise notification (form SCN1) on the Regulator's eServices portal: {{ regulator.portal }}. Since 1 April 2025 notifications must be made through the portal. Keep the reference number. Notification may only be delayed if a public body responsible for prevention, detection or investigation of offences, or the Regulator, determines that it would impede a criminal investigation.</p>
+
+<h2>Step 5 – Notify the affected people</h2>
+<p>Notify them in writing, by at least one of: mail to their last known physical or postal address; email to their last known email address; a prominent notice on our website; publication in the news media; or as directed by the Regulator. The notice must include:</p>
+<ol>
+  <li>a description of the possible consequences of the compromise;</li>
+  <li>the measures we have taken or intend to take to address it;</li>
+  <li>recommendations of what they can do to mitigate possible adverse effects;</li>
+  <li>if known, the identity of the unauthorised person who may have accessed or acquired the information.</li>
+</ol>
+<p>Use the Breach Notification Letter template. If the Regulator directs us to publicise the compromise, we will do so.</p>
+
+<h2>Step 6 – Recover and learn</h2>
+<p>Fix the root cause (e.g. enable MFA, encrypt devices, train staff, change supplier), update the risk register, and record lessons learned. Close the incident in the register and keep the record for 5 years.</p>
+
+<h2>Key contacts</h2>
+<table>
+  <tr><th>Information Officer</th><td>{{ c.io_name|ph:"Information Officer name" }} – {{ c.io_email|ph:"IO email" }}{% if c.io_phone %} – {{ c.io_phone }}{% endif %}</td></tr>
+  <tr><th>IT support</th><td><mark class="ph">[Name, phone, email]</mark></td></tr>
+  <tr><th>Information Regulator</th><td>{{ regulator.portal }} · {{ regulator.email }}</td></tr>
+  <tr><th>Bank fraud line</th><td><mark class="ph">[Your bank's fraud number]</mark></td></tr>
+  <tr><th>SAPS</th><td>10111</td></tr>
+</table>

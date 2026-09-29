@@ -1,0 +1,34 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Operator Agreement (Personal Information Processing Addendum)" ref="POPIA s19–s21, s72" %}
+<p>between <strong>{{ c.legal_name|ph:"Registered name" }}</strong> (Reg. no. {{ c.registration_number|ph:"Registration number" }}) ("the Responsible Party")</p>
+<p>and <strong><mark class="ph">[Service provider name]</mark></strong> (Reg. no. <mark class="ph">[number]</mark>) ("the Operator")</p>
+<p>This addendum forms part of the service agreement between the parties dated <mark class="ph">[date]</mark> ("the Main Agreement").</p>
+
+<h2>1. Definitions</h2>
+<p>Terms such as "personal information", "processing", "responsible party", "operator", "data subject" and "security compromise" have the meanings given in the Protection of Personal Information Act 4 of 2013 ("POPIA").</p>
+
+<h2>2. Subject matter</h2>
+<p>The Operator processes the following personal information on behalf of the Responsible Party solely to provide the services in the Main Agreement: <mark class="ph">[categories of personal information and data subjects, e.g. employee names, ID numbers, bank details for payroll processing]</mark>.</p>
+
+<h2>3. Operator obligations</h2>
+<p>The Operator shall:</p>
+<ol>
+  <li>process personal information only with the knowledge or authorisation of the Responsible Party and in accordance with its documented instructions (s20(a));</li>
+  <li>treat all personal information as confidential and not disclose it unless required by law or in the course of the proper performance of its duties (s20(b));</li>
+  <li>ensure that its personnel who have access to the personal information are bound by confidentiality obligations;</li>
+  <li>establish and maintain appropriate, reasonable technical and organisational security measures to prevent loss, damage, unauthorised destruction and unlawful access or processing, taking into account generally accepted information security practices (s19, s21(1));</li>
+  <li>notify the Responsible Party immediately, and in any event within 24 hours, where there are reasonable grounds to believe that personal information has been accessed or acquired by any unauthorised person (s21(2)), and provide all information reasonably required for the Responsible Party to meet its notification obligations under s22;</li>
+  <li>not transfer personal information outside the Republic of South Africa except as permitted by section 72 of POPIA and with the Responsible Party's prior written consent; currently approved locations: <mark class="ph">[e.g. South Africa / European Union]</mark>;</li>
+  <li>not engage a sub-operator without the Responsible Party's prior written consent, and bind any sub-operator to obligations no less protective than this addendum;</li>
+  <li>assist the Responsible Party to respond to requests from data subjects and the Information Regulator;</li>
+  <li>on termination, or on request, return or securely destroy all personal information and confirm this in writing, unless retention is required by law;</li>
+  <li>allow the Responsible Party, on reasonable notice, to verify compliance with this addendum (e.g. by questionnaire, certification or audit).</li>
+</ol>
+
+<h2>4. Liability</h2>
+<p>The Operator indemnifies the Responsible Party against losses, fines and claims arising from the Operator's breach of this addendum or of POPIA.</p>
+
+<h2>5. General</h2>
+<p>This addendum prevails over the Main Agreement to the extent of any conflict relating to personal information, and survives termination for as long as the Operator holds personal information of the Responsible Party.</p>
+
+{% include "compliance/documents/_sig.html" with left="For the Responsible Party" left_name=c.head_name right="For the Operator" right_name="" %}

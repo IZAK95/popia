@@ -1,0 +1,28 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Record of Processing Activities" ref="POPIA s17; PAIA s51" %}
+<p>Information Officer: {{ c.io_name|ph:"Information Officer name" }} ({{ c.io_email|ph:"IO email" }})</p>
+{% for a in activities %}
+<h2>{{ forloop.counter }}. {{ a.name }}{% if a.is_draft %} <mark class="ph">[draft]</mark>{% endif %}</h2>
+<table>
+  <tr><th>Data subjects</th><td>{{ a.data_subjects }}</td></tr>
+  <tr><th>Personal information</th><td>{{ a.personal_info }}</td></tr>
+  <tr><th>Purpose</th><td>{{ a.purpose }}</td></tr>
+  <tr><th>Lawful ground</th><td>{{ a.get_lawful_basis_display }}{% if a.lawful_basis_notes %} – {{ a.lawful_basis_notes }}{% endif %}</td></tr>
+  <tr><th>Source</th><td>{{ a.source|default:"—" }}</td></tr>
+  <tr><th>Special information</th><td>{% if a.special_info %}Yes – {{ a.special_info_details }}{% else %}No{% endif %}</td></tr>
+  <tr><th>Children's information</th><td>{{ a.children_info|yesno:"Yes,No" }}</td></tr>
+  <tr><th>Recipients</th><td>{{ a.recipients|default:"—" }}</td></tr>
+  <tr><th>Service providers</th><td>{% for o in a.operators.all %}{{ o.name }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td></tr>
+  <tr><th>Outside South Africa</th><td>{{ a.cross_border|yesno:"Yes,No" }}</td></tr>
+  <tr><th>Retention</th><td>{{ a.retention|default:"—" }}</td></tr>
+  <tr><th>Security measures</th><td>{{ a.security_measures|default:"—" }}</td></tr>
+  <tr><th>Privacy notice given</th><td>{{ a.notice_given|yesno:"Yes,No" }}</td></tr>
+  <tr><th>Owner / last reviewed</th><td>{{ a.owner|default:"—" }} / {{ a.last_reviewed|date:"j M Y"|default:"—" }}</td></tr>
+</table>
+{% empty %}<p><mark class="ph">[No processing activities recorded yet]</mark></p>
+{% endfor %}
+<h2>Service providers (operators)</h2>
+<table>
+  <tr><th>Provider</th><th>Service</th><th>Location</th><th>s72 basis</th><th>Agreement (s21)</th></tr>
+  {% for o in operators %}<tr><td>{{ o.name }}</td><td>{{ o.service }}</td><td>{{ o.data_location|default:"—" }}</td><td>{{ o.get_transfer_basis_display }}</td><td>{% if o.agreement_in_place %}Yes{% if o.agreement_date %} ({{ o.agreement_date|date:"j M Y" }}){% endif %}{% else %}No{% endif %}</td></tr>{% endfor %}
+</table>

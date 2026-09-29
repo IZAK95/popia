@@ -1,0 +1,27 @@
+{% extends "compliance/learn/base.html" %}
+{% block article %}
+<p>This app holds personal information too (names in requests and incidents, training attendees), so POPIA applies to it as well. Where you run it changes what you need to do.</p>
+<h2>Option A – On your own computer</h2>
+<ul>
+  <li>Information stays in South Africa – no cross-border transfer for this app.</li>
+  <li>Nothing is exposed to the internet; only reachable from that computer.</li>
+  <li>You <strong>must</strong> turn on full-disk encryption (BitLocker/FileVault) and keep backups (the app writes daily backups to the <code>backups</code> folder – copy them to an encrypted external drive or cloud folder).</li>
+  <li>Only available while that computer is on.</li>
+</ul>
+<h2>Option B – On a Hetzner server</h2>
+<ul>
+  <li>Available from anywhere, always on, protected by HTTPS, password and two-factor authentication.</li>
+  <li>Hetzner has no South African data centre – servers are in Germany, Finland, the USA or Singapore. <strong>Choose Germany or Finland</strong>: storing information there is a cross-border transfer under POPIA s72, justified because Hetzner is bound by the EU GDPR ("adequate protection").</li>
+  <li>Accept Hetzner's Data Processing Agreement in the Hetzner console and file it; keep Hetzner in your <a href="{% url 'compliance:operator_list' %}">Operators register</a>.</li>
+  <li>Keep the server updated and firewall only ports 22, 80 and 443 open (see the README).</li>
+</ul>
+<p>If you choose Option A, delete the Hetzner entry from the Operators register.</p>
+<h2>Security built into this app</h2>
+<ul>
+  <li>Mandatory two-factor authentication (authenticator app) for every sign-in.</li>
+  <li>Account lock-out after 5 failed password attempts.</li>
+  <li>HTTPS only, secure cookies, strict content-security policy, short sessions.</li>
+  <li>An audit log of every change.</li>
+  <li>Daily database backups, kept for 30 days.</li>
+</ul>
+{% endblock %}

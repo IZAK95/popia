@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.title }}{% endblock %}
+{% block content %}
+<div class="no-print">
+  <p class="small"><a href="{% url 'compliance:documents' %}">← Policies &amp; notices</a></p>
+  <div class="page-head">
+    <h1>{{ doc.title }}</h1>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" data-print>Print / save as PDF</button>
+      <a class="btn" href="{% url 'compliance:document_download' doc.slug %}">Download for Word</a>
+    </div>
+    <p class="lead"><strong>Next step:</strong> {{ doc.action }}</p>
+  </div>
+  {% if missing %}<div class="callout warn">Missing from your company profile: {{ missing|join:", " }}. <a href="{% url 'compliance:profile' %}">Complete it</a> and the highlighted placeholders fill in automatically.</div>{% endif %}
+</div>
+<article class="doc-page">{{ body }}</article>
+{% endblock %}

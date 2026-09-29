@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ object }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url urls.list %}">← {{ register.title }}</a></p>
+<div class="page-head">
+  <h1>{{ object }}</h1>
+  <div class="actions">
+    <a class="btn btn-primary" href="{% url urls.update object.pk %}">Edit</a>
+    <a class="btn btn-danger" href="{% url urls.delete object.pk %}">Delete</a>
+  </div>
+</div>
+{% if object.is_draft %}<div class="callout warn">This is an example added by the app. Check every field, edit it to match your business, and set Review status to <em>Confirmed</em>.</div>{% endif %}
+{% if object.issues %}<div class="callout bad"><strong>Open issues:</strong><ul>{% for issue in object.issues %}<li>{{ issue }}</li>{% endfor %}</ul></div>{% endif %}
+{% block extra %}{% endblock %}
+<section class="card">
+  <dl class="details">{% for label, value in rows %}<dt>{{ label }}</dt><dd>{{ value }}</dd>{% endfor %}</dl>
+</section>
+<p class="small muted">Created {{ object.created_at|date:"j M Y H:i" }} · last updated {{ object.updated_at|date:"j M Y H:i" }}</p>
+{% endblock %}

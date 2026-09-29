@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}PAIA annual report{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>PAIA annual report</h1>
+  <p class="lead">Every private body must report to the Information Regulator each year on requests for access to records (PAIA s83(4)) – even if you received none. Submit on the <a href="https://eservices.inforegulator.org.za" target="_blank" rel="noopener">eServices portal</a> between <strong>1 April and 30 June</strong>. The report covers <strong>1 April to 31 March</strong>, regardless of your financial year.</p>
+</div>
+{% if window.open %}<div class="callout warn"><strong>The submission window is open now</strong> – {{ window.days_left }} day{{ window.days_left|pluralize }} left (closes 30 June).</div>{% endif %}
+<form method="get" class="filters">
+  {% for y in years %}<a href="?year={{ y }}" class="{% if y == end_year %}on{% endif %}">1 Apr {{ y|add:"-1" }} – 31 Mar {{ y }}</a>{% endfor %}
+</form>
+<div class="grid grid-2">
+  <section class="card">
+    <h2>Figures for {{ start|date:"j M Y" }} – {{ end|date:"j M Y" }}</h2>
+    <p class="small muted">Taken from your <a href="{% url 'compliance:request_list' %}">request register</a> (type "Access"). Enter these on the portal when asked.</p>
+    <dl class="details">{% for label, value in figures %}<dt>{{ label }}</dt><dd><strong>{{ value }}</strong></dd>{% endfor %}</dl>
+    {% if refusal_grounds %}<h3>Grounds used to refuse</h3><ul>{% for g in refusal_grounds %}<li>{{ g }}</li>{% endfor %}</ul>{% endif %}
+  </section>
+  <section class="card">
+    <h2>How to submit</h2>
+    <ol class="prose">
+      <li>Sign in to <a href="https://eservices.inforegulator.org.za" target="_blank" rel="noopener">eservices.inforegulator.org.za</a> with the profile you used to register the Information Officer.</li>
+      <li>Choose the PAIA annual report (section 83(4)) option for private bodies.</li>
+      <li>Answer the questions using the figures on this page. If you had no requests, report zeros.</li>
+      <li>Save or screenshot the confirmation and mark the task done in <a href="{% url 'compliance:task_list' %}">Tasks</a>.</li>
+    </ol>
+    <h3>Other requests in this period (for your records)</h3>
+    <dl class="details">{% for label, value in other %}<dt>{{ label }}</dt><dd>{{ value }}</dd>{% endfor %}</dl>
+  </section>
+</div>
+{% endblock %}

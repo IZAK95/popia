@@ -1,0 +1,24 @@
+{% extends "compliance/learn/base.html" %}
+{% block article %}
+<p>People whose information you hold have enforceable rights. A request can arrive by email, phone, WhatsApp, letter or in person – since April 2025 you may not insist on a specific form, and you may not charge for objections or correction requests.</p>
+<h2>The rights</h2>
+<ul>
+  <li><strong>Access (s23 + PAIA):</strong> to know whether you hold information about them, get a description or copy of it, and know who has had access to it.</li>
+  <li><strong>Correction or deletion (s24):</strong> where information is inaccurate, irrelevant, excessive, out of date, incomplete, misleading or unlawfully obtained – or no longer authorised to be kept.</li>
+  <li><strong>Objection (s11(3)):</strong> to processing based on legitimate interests, and to direct marketing at any time.</li>
+  <li><strong>Withdraw consent</strong> where you rely on consent.</li>
+  <li><strong>Not to be subject to solely automated decisions</strong> with legal effect (s71).</li>
+  <li><strong>Complain</strong> to the Information Regulator, and <strong>sue</strong> for damages (s99).</li>
+</ul>
+<h2>How to respond</h2>
+<ol>
+  <li><strong>Log it</strong> in <a href="{% url 'compliance:request_list' %}">Requests</a> the same day. The app sets a 30-day deadline.</li>
+  <li><strong>Verify identity</strong> before disclosing anything – sending information to an impostor is a breach.</li>
+  <li><strong>Acknowledge</strong> the request.</li>
+  <li><strong>Search</strong> email, shared drives, HR/payroll, accounting and paper files.</li>
+  <li><strong>Decide within 30 days.</strong> For access requests you may extend once by up to 30 days, in writing with reasons (PAIA s57). If you don't respond in time, the request is deemed refused.</li>
+  <li><strong>Respond in writing</strong> using the <a href="{% url 'compliance:document' 'request-response' %}">letter templates</a>. You may redact other people's information. Refuse only on grounds in PAIA (e.g. another person's privacy, legal privilege, third-party commercial information).</li>
+</ol>
+<h2>Fees</h2>
+<p>People requesting their own personal information pay no request fee. Objections and correction/deletion requests are free. For other PAIA requests prescribed fees apply (see your PAIA manual).</p>
+{% endblock %}

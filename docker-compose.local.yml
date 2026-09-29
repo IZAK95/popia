@@ -1,0 +1,31 @@
+# Run on your own computer. Only reachable from this machine at http://localhost:8000
+# Usage: docker compose -f docker-compose.local.yml up -d --build
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DEBUG: "0"
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      LOCAL_HTTP: "1"
+      PROXY_COUNT: "0"
+    volumes:
+      - ./data:/data
+      - ./backups:/backups
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  backup:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DEBUG: "0"
+    entrypoint: []
+    command: ["python", "manage.py", "backup_db", "--loop", "--keep-days", "30"]
+    volumes:
+      - ./data:/data
+      - ./backups:/backups
+    depends_on:
+      - app

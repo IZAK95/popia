@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}POPIA in plain language{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>POPIA in plain language</h1>
+  <p class="lead">A short course for business owners who have never dealt with POPIA. About 45 minutes in total. Also useful as the script for your yearly staff awareness session.</p>
+</div>
+<ol class="topic-list">
+  {% for slug, title, time in topics %}<li><a href="{% url 'compliance:learn_topic' slug %}"><span><span class="num">{{ forloop.counter }}</span>{{ title }}</span><span class="muted small">{{ time }}</span></a></li>{% endfor %}
+</ol>
+{% endblock %}

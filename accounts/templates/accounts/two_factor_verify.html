@@ -1,0 +1,13 @@
+{% extends "auth_base.html" %}
+{% block title %}Verification code{% endblock %}
+{% block content %}
+<h1>Enter your code</h1>
+<p class="muted">Open your authenticator app and enter the current 6-digit code.</p>
+<form method="post">
+  {% csrf_token %}
+  {% include "includes/field.html" with field=form.token %}
+  <button class="btn btn-primary btn-block" type="submit">Verify</button>
+</form>
+<form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="btn btn-link" type="submit">Sign out</button></form>
+<p class="small muted">Lost your phone? On the server run <code>docker compose exec app python manage.py reset_2fa &lt;username&gt;</code>, then sign in again to enrol a new phone.</p>
+{% endblock %}

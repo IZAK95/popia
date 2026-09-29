@@ -1,0 +1,30 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Request Response Letters" ref="POPIA s11(3), s23–s25; PAIA s56–s57" %}
+<p>Copy the letter you need into an email or on letterhead. Replace the highlighted parts. Keep a copy with the request in the request register.</p>
+
+<h2>A. Acknowledgement of receipt</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>We confirm receipt on <mark class="ph">[date]</mark> of your request regarding your personal information (our reference <mark class="ph">[DSR-reference]</mark>). To protect your information, we first need to confirm your identity: <mark class="ph">[e.g. please reply with a copy of your ID / we will call you on the number we have on record]</mark>. We will respond by no later than <mark class="ph">[date – 30 days]</mark>.</p>
+<p>Kind regards<br>{{ c.io_name|ph:"Information Officer name" }}, Information Officer, {{ c.legal_name|ph:"Registered name" }}</p>
+
+<h2>B. Extension of the period (access requests)</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>In terms of section 57 of PAIA, we are extending the period to respond to your request <mark class="ph">[reference]</mark> by <mark class="ph">[up to 30]</mark> days, to <mark class="ph">[new date]</mark>, because <mark class="ph">[the request involves a large number of records / a search through records held elsewhere / consultation with third parties]</mark>. If you disagree with this extension you may lodge a complaint with the Information Regulator ({{ regulator.paia_complaints }}) or apply to court.</p>
+
+<h2>C. Access granted</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>Following your request <mark class="ph">[reference]</mark>, we confirm that we hold the following personal information about you: <mark class="ph">[describe]</mark>. It is used for <mark class="ph">[purposes]</mark> and has been shared with <mark class="ph">[categories of third parties]</mark>. A copy is attached. <mark class="ph">[Information about other people has been removed to protect their privacy.]</mark></p>
+<p>If any of this information is inaccurate or out of date, you may ask us to correct it.</p>
+
+<h2>D. Correction or deletion completed</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>As requested (<mark class="ph">[reference]</mark>), we have <mark class="ph">[corrected / deleted]</mark> the following information: <mark class="ph">[details]</mark>. <mark class="ph">[Where applicable: We have also informed the following parties to whom the information had been disclosed: ...]</mark></p>
+
+<h2>E. Request refused (in whole or in part)</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>We have considered your request <mark class="ph">[reference]</mark>. Unfortunately we are unable to <mark class="ph">[grant access to / correct / delete]</mark> <mark class="ph">[the information / part of the information]</mark> because <mark class="ph">[reason, with the section of PAIA or POPIA relied on, e.g. PAIA s63 – it would disclose personal information of another person; or: the law requires us to keep this record until (date)]</mark>.</p>
+<p>If you are not satisfied, you may lodge a complaint with the Information Regulator ({{ regulator.popia_complaints }} / {{ regulator.paia_complaints }}, {{ regulator.portal }}) or apply to court within 180 days.</p>
+
+<h2>F. Objection or marketing opt-out confirmed</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>We confirm that we have received your objection (<mark class="ph">[reference]</mark>) and have stopped processing your personal information for <mark class="ph">[purpose, e.g. direct marketing]</mark> with effect from <mark class="ph">[date]</mark>. You will not receive further <mark class="ph">[marketing communications]</mark> from us.</p>

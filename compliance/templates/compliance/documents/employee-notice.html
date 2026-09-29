@@ -1,0 +1,40 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Employee Privacy Notice and Consent" ref="POPIA s18, s26–s27, s32, s34–s35" %}
+<p>This notice explains how {{ c.legal_name|ph:"Registered name" }} ("the Company") processes personal information about employees, contractors and job applicants.</p>
+
+<h2>1. What we collect</h2>
+<ul>
+  <li>Identity and contact details: name, ID or passport number, date of birth, address, phone, email, next of kin</li>
+  <li>Employment information: CV, qualifications, references, contract, job title, performance, leave, disciplinary and training records</li>
+  <li>Financial information: bank details, tax number, salary, deductions, benefits</li>
+  <li>Dependants' details where needed for medical aid or benefits (with your consent as parent/guardian)</li>
+  <li>Special personal information where required, such as health information (sick notes, incapacity, occupational health) and, if we are a designated employer, race for Employment Equity reporting</li>
+</ul>
+
+<h2>2. Why we need it</h2>
+<p>To conclude and manage your employment contract, pay you, meet our obligations under labour, tax, UIF, COIDA and health and safety legislation, administer benefits, keep our workplace and systems secure, and manage performance and conduct. Most of this processing is necessary for your contract or required by law; providing it is therefore mandatory, and without it we may be unable to employ or pay you.</p>
+
+<h2>3. Health and other special information</h2>
+<p>Health information is processed only as needed to comply with employment law and our policies (e.g. sick leave, incapacity, occupational health), is kept separate from your general file, and is only accessible to authorised persons bound by confidentiality, in line with POPIA s32 and the 2026 Regulations relating to health information. Race information is used only for Employment Equity and B-BBEE purposes as the law requires.</p>
+
+<h2>4. Who receives it</h2>
+<p>SARS, the Department of Employment and Labour (UIF, COIDA), medical aid, retirement fund and insurance administrators, our bank, payroll and IT service providers under written confidentiality and security agreements, and our auditors or advisors.{% if overseas %} Some service providers store information outside South Africa ({% for o in overseas %}{{ o.name }}{% if not forloop.last %}, {% endif %}{% endfor %}); we only use providers that offer adequate protection as required by POPIA s72.{% endif %}</p>
+
+<h2>5. How long we keep it</h2>
+<p>For the duration of your employment and afterwards as required by law (generally 3–5 years under the BCEA, UIF Act and Tax Administration Act), after which it is securely destroyed. Applications from unsuccessful candidates are kept for 6 months unless you agree to longer.</p>
+
+<h2>6. Your rights</h2>
+<p>You may request access to, correction or deletion of your information, object to certain processing, and complain to the Information Regulator ({{ regulator.popia_complaints }}). Contact the Information Officer: {{ c.io_name|ph:"Information Officer name" }}, {{ c.io_email|ph:"IO email" }}.</p>
+
+<h2>7. Your obligations</h2>
+<p>Keep your information up to date, and treat all personal information you handle at work confidentially and in accordance with the Company's POPIA Compliance Policy.</p>
+
+<h2>8. Acknowledgement and optional consents</h2>
+<p>I acknowledge that I have read and understood this notice.</p>
+<p>Tick where applicable – these consents are voluntary and can be withdrawn at any time:</p>
+<ul>
+  <li>☐ I consent to the processing of my biometric information (e.g. fingerprint/face) for time-and-attendance or access control. I understand an alternative is available if I do not consent.</li>
+  <li>☐ I consent to criminal record, credit and qualification checks relevant to my position.</li>
+  <li>☐ As parent/guardian, I consent to the processing of my children's information for medical aid and benefit purposes.</li>
+</ul>
+{% include "compliance/documents/_sig.html" with left="Employee" left_name="" right="For the Company" right_name=c.io_name %}

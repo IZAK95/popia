@@ -1,0 +1,12 @@
+{% extends "compliance/learn/base.html" %}
+{% block article %}
+<p>The <strong>Promotion of Access to Information Act 2 of 2000 (PAIA)</strong> gives people the right to request records held by public and private bodies, where they need them to exercise or protect a right. The Information Regulator enforces both PAIA and POPIA, and access requests for personal information under POPIA are handled through PAIA's procedure.</p>
+<h2>Your three PAIA duties</h2>
+<ol>
+  <li><strong>Have a PAIA manual (s51).</strong> Every private body – including sole proprietors and small companies – must compile one. The small-business exemption expired on 31 December 2021. Publish it on your website and keep a copy at your premises. <a href="{% url 'compliance:document' 'paia-manual' %}">Generate yours</a>.</li>
+  <li><strong>Handle access requests</strong> within 30 days (extendable once by 30 days).</li>
+  <li><strong>Submit an annual report (s83(4))</strong> on the eServices portal between <strong>1 April and 30 June</strong>, covering 1 April to 31 March – even if you received no requests. The Regulator has confirmed this is mandatory for all private bodies. <a href="{% url 'compliance:paia_report' %}">Your figures</a>.</li>
+</ol>
+<h2>Enforcement</h2>
+<p>The Regulator conducts PAIA compliance assessments and has issued enforcement notices to private bodies for missing PAIA manuals and unsubmitted reports. Failing to comply with an enforcement notice is an offence.</p>
+{% endblock %}

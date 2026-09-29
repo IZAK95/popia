@@ -1,0 +1,50 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Privacy Notice" ref="POPIA s18" %}
+<p>This notice explains how {{ c.legal_name|ph:"Registered name" }}{% if c.trading_name %} trading as {{ c.trading_name }}{% endif %} ("we", "us") collects and uses personal information about our customers, suppliers, their representatives and visitors to our website, as required by the Protection of Personal Information Act 4 of 2013 (POPIA).</p>
+
+<h2>1. Who we are</h2>
+<p>{{ c.business_description|ph:"Short description of the business" }}</p>
+<p>Address: {{ c.physical_address|ph:"Physical address" }}<br>Email: {{ c.email|ph:"General email" }}{% if c.phone %} · Phone: {{ c.phone }}{% endif %}<br>
+Information Officer: {{ c.io_name|ph:"Information Officer name" }} – {{ c.io_email|ph:"IO email" }}</p>
+
+<h2>2. What information we collect and why</h2>
+<table>
+  <tr><th>Whose information</th><th>What we collect</th><th>Why</th><th>Legal basis</th></tr>
+  {% for a in activities %}{% if "mployee" not in a.data_subjects and "pplicant" not in a.data_subjects %}
+  <tr><td>{{ a.data_subjects }}</td><td>{{ a.personal_info }}</td><td>{{ a.purpose }}</td><td>{{ a.get_lawful_basis_display }}</td></tr>
+  {% endif %}{% empty %}<tr><td colspan="4"><mark class="ph">[Add customer/supplier activities to your Processing register]</mark></td></tr>{% endfor %}
+</table>
+<p>Providing your information is voluntary, but if you don't provide information we need to conclude or perform a contract (for example billing details), we may be unable to do business with you. Where we collect information from other sources (for example public registers or your employer), we do so as permitted by POPIA.</p>
+
+<h2>3. Who we share it with</h2>
+<p>We share information only where necessary: with service providers who process it on our behalf under written agreements requiring confidentiality and security (e.g. email, accounting and IT service providers), with our bank, couriers and professional advisors, and with authorities such as SARS where the law requires. We do not sell personal information.</p>
+
+<h2>4. Transfers outside South Africa</h2>
+{% if overseas %}
+<p>Some of our service providers store information outside South Africa:</p>
+<ul>{% for o in overseas %}<li>{{ o.service }} – {{ o.data_location|default:"outside South Africa" }}</li>{% endfor %}</ul>
+<p>We only use providers who are subject to laws, binding corporate rules or agreements that provide an adequate level of protection, as required by section 72 of POPIA.</p>
+{% else %}
+<p>We store your information in South Africa. If this changes, we will only transfer it where section 72 of POPIA permits.</p>
+{% endif %}
+
+<h2>5. How we protect it</h2>
+<p>We use appropriate technical and organisational measures, including access controls, multi-factor authentication, encryption of devices, secure backups, confidentiality obligations on staff and service providers, and secure destruction of records.</p>
+
+<h2>6. How long we keep it</h2>
+<p>We keep information only as long as needed for the purposes above or as required by law – for example, tax and accounting records for 5 to 7 years (Tax Administration Act, Companies Act). Afterwards it is securely destroyed or de-identified.</p>
+
+<h2>7. Your rights</h2>
+<p>You have the right to:</p>
+<ul>
+  <li>ask whether we hold information about you and request a copy (access);</li>
+  <li>ask us to correct, update or delete information that is inaccurate, irrelevant, excessive, out of date, incomplete, misleading or unlawfully obtained;</li>
+  <li>object to processing based on legitimate interests, and to direct marketing at any time;</li>
+  <li>withdraw consent where we rely on it;</li>
+  <li>lodge a complaint with the Information Regulator.</li>
+</ul>
+<p>Contact our Information Officer at {{ c.io_email|ph:"IO email" }}. You may use the prescribed forms (Form 1 for objections, Form 2 for correction or deletion) or simply email, phone or write to us – there is no charge. We will verify your identity before acting. Access requests are also handled under our PAIA manual.</p>
+<p><strong>Information Regulator:</strong> {{ regulator.address }} · {{ regulator.email }} · complaints: {{ regulator.popia_complaints }} · {{ regulator.website }}</p>
+
+<h2>8. Changes to this notice</h2>
+<p>We may update this notice from time to time. The latest version is always available on {% if c.website %}{{ c.website }}{% else %}our website{% endif %} or from our Information Officer.</p>

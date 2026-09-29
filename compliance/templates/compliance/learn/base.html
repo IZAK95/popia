@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ topic.1 }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'compliance:learn' %}">← POPIA in plain language</a></p>
+<div class="page-head"><h1>{{ topic.1 }}</h1><p class="lead">{{ topic.2 }} read</p></div>
+<article class="card prose">
+{% block article %}{% endblock %}
+</article>
+<div class="steps-nav">
+  {% if prev %}<a href="{% url 'compliance:learn_topic' prev.0 %}">← {{ prev.1 }}</a>{% else %}<span></span>{% endif %}
+  {% if next %}<a href="{% url 'compliance:learn_topic' next.0 %}">{{ next.1 }} →</a>{% else %}<a href="{% url 'compliance:checklist' %}">Go to the checklist →</a>{% endif %}
+</div>
+{% endblock %}

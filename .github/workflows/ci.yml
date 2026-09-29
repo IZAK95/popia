@@ -46,10 +46,10 @@ jobs:
         run: docker build -t popia:ci .
       - name: Start container and check health
         run: |
-          docker run -d --name popia -p 8000:8000 \
+          docker run -d --name popia -p 8765:8765 \
             -e SECRET_KEY=ci-only-secret-key-value-1234567890abcdef \
             -e LOCAL_HTTP=1 -e PROXY_COUNT=0 -e ALLOWED_HOSTS=localhost,127.0.0.1 popia:ci
-          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8000/healthz && exit 0; sleep 1; done
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8765/healthz && exit 0; sleep 1; done
           docker logs popia; exit 1
       - name: Refuses to start with a locked vault
         run: |

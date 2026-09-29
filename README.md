@@ -74,7 +74,7 @@ start, so nothing is ever written to the unencrypted disk.
    ```
    Choose a strong passphrase and **save it in your password manager**. If you lose it, the data can't be
    recovered. The script creates `~/popia-vault.img` (2 GB), updates `.env` to use it and starts the app.
-4. Open <http://localhost:8000>, sign in and scan the QR code with an authenticator app. Then remove
+4. Open <http://localhost:8765>, sign in and scan the QR code with an authenticator app. Then remove
    `ADMIN_PASSWORD` from `.env` and delete the "Hetzner Online GmbH" entry from **Operators** in the app.
 
 Every day:
@@ -113,7 +113,7 @@ plan full-disk encryption for your next reinstall or new laptop.
    ```bash
    docker compose -f docker-compose.local.yml up -d --build
    ```
-5. Open <http://localhost:8000>, sign in and scan the QR code with an authenticator app. After a reboot, start the
+5. Open <http://localhost:8765>, sign in and scan the QR code with an authenticator app. After a reboot, start the
    app again with the same command. It doesn't start automatically.
 6. Remove `ADMIN_PASSWORD` from `.env`.
 7. In the app, delete the "Hetzner Online GmbH" entry from **Operators**, because you're not using Hetzner.

@@ -111,7 +111,7 @@ cmd_create() {
 cmd_start() {
   say "Starting the app"
   "${COMPOSE[@]}" up -d --build
-  say "Open http://localhost:8000  –  when you're done, run: scripts/popia-vault.sh lock"
+  say "Open http://localhost:8765  –  when you're done, run: scripts/popia-vault.sh lock"
 }
 
 cmd_unlock() {

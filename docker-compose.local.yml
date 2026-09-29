@@ -1,4 +1,4 @@
-# Run on your own computer. Only reachable from this machine at http://localhost:8000
+# Run on your own computer. Only reachable from this machine at http://localhost:8765
 #
 # Recommended on Ubuntu without full-disk encryption: keep the data in an encrypted
 # LUKS vault and start/stop the app with scripts/popia-vault.sh (see README).
@@ -20,7 +20,7 @@ services:
       - ${POPIA_DATA_DIR:-./data}:/data
       - ${POPIA_BACKUP_DIR:-./backups}:/backups
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8765:8765"
 
   backup:
     build: .

@@ -13,7 +13,7 @@ services:
       - app-data:/data
       - app-backups:/backups
     expose:
-      - "8000"
+      - "8765"
 
   backup:
     build: .

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit {{ object }}{% else %}New {{ register.singular }}{% endif %}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% if object %}{% url urls.detail object.pk %}{% else %}{% url urls.list %}{% endif %}">← Back</a></p>
+<div class="page-head"><h1>{% if object %}Edit {{ object }}{% else %}New {{ register.singular }}{% endif %}</h1></div>
+<form method="post" class="card">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="flash flash-error">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="grid grid-2">{% for field in form %}{% include "includes/field.html" %}{% endfor %}</div>
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn" href="{% if object %}{% url urls.detail object.pk %}{% else %}{% url urls.list %}{% endif %}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

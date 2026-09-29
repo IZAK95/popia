@@ -1,0 +1,24 @@
+{% extends "compliance/learn/base.html" %}
+{% block article %}
+<h2>Who is it?</h2>
+<p>For a private business, the Information Officer is automatically the <strong>head</strong>: the sole proprietor, the CEO/managing director of a company, or the partner/person in charge. The head may <strong>authorise</strong> another employee to be the Information Officer (in writing), but the head stays accountable. In a small business, the owner is usually the IO.</p>
+<h2>What do they do?</h2>
+<ul>
+  <li>Encourage and oversee compliance – this framework.</li>
+  <li>Handle requests from people and PAIA access requests.</li>
+  <li>Work with the Regulator during any investigation.</li>
+  <li>Ensure a personal information impact assessment is done (your risk register).</li>
+  <li>Develop internal measures and run staff awareness sessions.</li>
+  <li>Continuously improve the framework (added by the 2025 amendments).</li>
+</ul>
+<h2>Registration</h2>
+<p>The IO may only take up their duties once registered with the Information Regulator (s55(2)). It's free and online:</p>
+<ol>
+  <li>Go to <a href="https://eservices.inforegulator.org.za" target="_blank" rel="noopener">eservices.inforegulator.org.za</a> and create a profile.</li>
+  <li>Select Information Officer registration and enter the business details (including CIPC registration number) and IO details.</li>
+  <li>Keep the confirmation and record the date in your <a href="{% url 'compliance:profile' %}">company profile</a>.</li>
+</ol>
+<p>Use the same profile later to report breaches and submit the PAIA annual report. Tip: register with a role email such as privacy@yourdomain so it survives staff changes.</p>
+<h2>Deputy Information Officers</h2>
+<p>Optional for small businesses. Useful if someone needs to handle requests when the IO is unavailable. Deputies are designated in writing and also registered.</p>
+{% endblock %}

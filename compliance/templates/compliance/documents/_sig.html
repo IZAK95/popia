@@ -1,0 +1,4 @@
+{% load compliance_tags %}<table class="sig"><tr>
+<td><span>{{ left|default:"Signature" }}<br>Name: {{ left_name|ph:"Name" }}<br>Date:</span></td>
+<td><span>{{ right|default:"Signature" }}{% if right_name != None %}<br>Name: {{ right_name|ph:"Name" }}{% endif %}<br>Date:</span></td>
+</tr></table>

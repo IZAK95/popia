@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load compliance_tags %}
+{% block title %}Export & backup{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Export &amp; backup</h1>
+  <p class="lead">This app contains personal information, so its backups do too. Keep downloaded copies somewhere encrypted (e.g. a BitLocker/FileVault/LUKS-encrypted disk or USB drive, or an encrypted cloud folder) and delete old ones in line with your retention schedule.</p>
+</div>
+<div class="grid grid-2">
+  <section class="card">
+    <h2>Export everything (JSON)</h2>
+    <p>A readable copy of all your compliance records – useful for your own archive or moving to another system.</p>
+    <a class="btn btn-primary" href="{% url 'compliance:export_json' %}">Download JSON export</a>
+  </section>
+  <section class="card">
+    <h2>Database backups</h2>
+    <p>A backup runs automatically every 24 hours when deployed with Docker, keeping 30 days. You can also make one now.</p>
+    <form method="post" action="{% url 'compliance:backup_now' %}">{% csrf_token %}<button class="btn" type="submit">Create backup now</button></form>
+    {% if backups %}
+      <ul class="alerts">{% for name, size in backups %}<li><span class="dot ok"></span><a href="{% url 'compliance:backup_download' name %}">{{ name }}</a> <span class="muted small">{{ size|filesize }}</span></li>{% endfor %}</ul>
+    {% else %}
+      <p class="muted small">No backups yet.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

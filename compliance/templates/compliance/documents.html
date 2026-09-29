@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Policies & notices{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Policies &amp; notices</h1>
+  <p class="lead">Ready-made documents filled in from your company profile and registers. Open one to read and print it (save as PDF from the print dialog), or download it as an editable Word document. Anything highlighted in <mark>yellow</mark> is still missing.</p>
+</div>
+{% if profile.completeness < 100 %}<div class="callout warn">Your company profile is {{ profile.completeness }}% complete, so some documents will show placeholders. <a href="{% url 'compliance:profile' %}">Complete the profile</a>.</div>{% endif %}
+<div class="grid grid-3">
+  {% for doc in docs %}
+    <section class="card doc-card">
+      <h3>{{ doc.title }}</h3>
+      <p class="small muted">{{ doc.audience }} · {{ doc.legal_ref }}</p>
+      <p>{{ doc.description }}</p>
+      <p class="small"><strong>Then:</strong> {{ doc.action }}</p>
+      <div class="actions">
+        <a class="btn btn-primary btn-sm" href="{% url 'compliance:document' doc.slug %}">Open</a>
+        <a class="btn btn-sm" href="{% url 'compliance:document_download' doc.slug %}">Download for Word</a>
+      </div>
+    </section>
+  {% endfor %}
+</div>
+{% endblock %}

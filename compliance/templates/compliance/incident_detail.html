@@ -1,0 +1,19 @@
+{% extends "compliance/register_detail.html" %}
+{% block extra %}
+{% if object.needs_notification %}
+<div class="callout bad"><strong>Notification required.</strong> There are reasonable grounds to believe personal information was accessed or acquired by an unauthorised person. POPIA s22 requires you to notify the Information Regulator <em>and</em> the affected people as soon as reasonably possible after discovery ({{ object.discovered_on|date:"j F Y" }}).</div>
+{% elif object.notifiable == "unsure" and object.is_open %}
+<div class="callout warn"><strong>Decide quickly whether this is notifiable.</strong> If you can't rule out that someone unauthorised accessed or acquired the information, treat it as notifiable. When in doubt, notify.</div>
+{% endif %}
+<section class="card">
+  <h2>Breach response steps (POPIA s22)</h2>
+  <ol class="timeline">
+    <li class="{% if object.containment %}done{% else %}now{% endif %}"><strong>Contain it – immediately</strong>Change passwords and enable MFA, revoke sessions, remote-wipe lost devices, ask misdirected recipients to delete, isolate infected computers, contact your IT support and the affected service provider.</li>
+    <li class="{% if object.notifiable != 'unsure' %}done{% endif %}"><strong>Assess</strong>What information, whose, how many people, was it encrypted, what harm could follow (identity theft, fraud, embarrassment)? Record it above.</li>
+    <li class="{% if object.regulator_notified_on %}done{% elif object.notifiable == 'yes' %}now{% endif %}"><strong>Notify the Information Regulator</strong>Submit form SCN1 on the <a href="https://eservices.inforegulator.org.za" target="_blank" rel="noopener">eServices portal</a> (email is no longer accepted since April 2025). Save the reference number here. Notification may only be delayed if a public body or the Regulator determines it would impede a criminal investigation.</li>
+    <li class="{% if object.subjects_notified_on %}done{% elif object.notifiable == 'yes' %}now{% endif %}"><strong>Notify the affected people in writing</strong>By email, letter to their last known address, a prominent notice on your website, or news media. It must give enough information to let them protect themselves: possible consequences, what you've done, what they should do, and the identity of the unauthorised person if known (s22(4)–(5)). Use the <a href="{% url 'compliance:document' 'breach-letter' %}">notification letter template</a>.</li>
+    <li class="{% if object.lessons_learned %}done{% endif %}"><strong>Fix the cause and learn</strong>Record the root cause and what you changed (e.g. MFA, encryption, training). Update the risk register.</li>
+    <li class="{% if object.status == 'closed' %}done{% endif %}"><strong>Close the incident</strong>Keep this record (retention: 5 years) as evidence of your response.</li>
+  </ol>
+</section>
+{% endblock %}

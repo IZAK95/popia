@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ item.code }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'compliance:checklist' %}">← Checklist</a> · Item {{ position }} of {{ count }}</p>
+<div class="page-head">
+  <h1>{{ item.title }}</h1>
+  <p class="lead"><span class="check-code">{{ item.code }}</span> · {{ item.get_area_display }}{% if item.legal_ref %} · <strong>{{ item.legal_ref }}</strong>{% endif %}{% if item.essential %} · <span class="badge info">Essential</span>{% endif %}</p>
+</div>
+<div class="grid grid-2">
+  <section class="card">
+    <h2>Why it matters</h2>
+    <p>{{ item.why }}</p>
+    <h2>How to do it</h2>
+    <p class="howto">{{ item.how|urlize }}</p>
+    {% if item.action_url %}<a class="btn btn-primary" href="{% url item.action_url %}">{{ item.action_label|default:"Open" }} →</a>{% endif %}
+  </section>
+  <section class="card">
+    <h2>Your status</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="field radio-cards">{{ form.status }}</div>
+      {% include "includes/field.html" with field=form.evidence %}
+      {% if item.completed_on %}<p class="small muted">Completed on {{ item.completed_on|date:"j F Y" }}.</p>{% endif %}
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" name="next">Save &amp; next open item</button>
+        <button class="btn" type="submit">Save</button>
+      </div>
+    </form>
+  </section>
+</div>
+<div class="steps-nav">
+  {% if prev_pk %}<a href="{% url 'compliance:checklist_item' prev_pk %}">← Previous</a>{% else %}<span></span>{% endif %}
+  {% if next_pk %}<a href="{% url 'compliance:checklist_item' next_pk %}">Next →</a>{% endif %}
+</div>
+{% endblock %}

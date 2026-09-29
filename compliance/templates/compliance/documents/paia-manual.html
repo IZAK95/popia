@@ -1,0 +1,109 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="PAIA Manual" ref="Section 51 of the Promotion of Access to Information Act 2 of 2000 (PAIA)" %}
+<p>This manual is published by {{ c.legal_name|ph:"Registered name" }}{% if c.trading_name %} (trading as {{ c.trading_name }}){% endif %}, a private body, in terms of section 51 of PAIA, and also serves to meet the documentation and openness requirements of the Protection of Personal Information Act 4 of 2013 (POPIA).</p>
+
+<h2>1. Abbreviations</h2>
+<ul>
+  <li>"Company" – {{ c.legal_name|ph:"Registered name" }}</li>
+  <li>"IO" – Information Officer; "DIO" – Deputy Information Officer</li>
+  <li>"PAIA" – Promotion of Access to Information Act 2 of 2000</li>
+  <li>"POPIA" – Protection of Personal Information Act 4 of 2013</li>
+  <li>"Regulator" – the Information Regulator (South Africa)</li>
+</ul>
+
+<h2>2. Purpose of this manual</h2>
+<p>This manual helps anyone who wants to request access to records held by the Company. It sets out the categories of records the Company holds, which records are freely available, how to make a request, the fees that may apply, and how the Company processes personal information.</p>
+
+<h2>3. Key contact details</h2>
+<table>
+  <tr><th>Head of the Company</th><td>{{ c.head_name|ph:"Head of business" }}{% if c.head_title %}, {{ c.head_title }}{% endif %}</td></tr>
+  <tr><th>Information Officer</th><td>{{ c.io_name|ph:"Information Officer name" }}{% if c.io_title %}, {{ c.io_title }}{% endif %}<br>Email: {{ c.io_email|ph:"IO email" }}{% if c.io_phone %}<br>Phone: {{ c.io_phone }}{% endif %}</td></tr>
+  {% if c.deputy_io_name %}<tr><th>Deputy Information Officer</th><td>{{ c.deputy_io_name }}<br>Email: {{ c.deputy_io_email }}</td></tr>{% endif %}
+  <tr><th>Physical address</th><td>{{ c.physical_address|ph:"Physical address"|linebreaksbr }}</td></tr>
+  <tr><th>Postal address</th><td>{{ c.postal_address|default:c.physical_address|ph:"Postal address"|linebreaksbr }}</td></tr>
+  <tr><th>General contact</th><td>{{ c.email|ph:"General email" }}{% if c.phone %} · {{ c.phone }}{% endif %}{% if c.website %} · {{ c.website }}{% endif %}</td></tr>
+  <tr><th>Registration number</th><td>{{ c.registration_number|ph:"CIPC registration number" }}</td></tr>
+</table>
+
+<h2>4. Guide on how to use PAIA</h2>
+<p>The Regulator has updated and made available the guide on how to use PAIA ("the Guide") in each official language, as contemplated in section 10 of PAIA. The Guide explains how to exercise any right under PAIA and POPIA, including the contact details of Information Officers, the manner and form of requests, the help available from the Regulator, and remedies available. Copies are available for public inspection at the Company's office during normal business hours and from the Regulator:</p>
+<p>{{ regulator.name }}, {{ regulator.address }} · {{ regulator.email }} · {{ regulator.website }}</p>
+
+<h2>5. Records available without a request (section 52)</h2>
+<ul>
+  <li>Information on the Company's website{% if c.website %} ({{ c.website }}){% endif %}, including this manual and the Company's privacy notice</li>
+  <li>Product and service brochures and marketing material</li>
+  <li>Public registration information held at the CIPC</li>
+</ul>
+
+<h2>6. Records available in terms of other legislation</h2>
+<p>The Company keeps records as required by, among others, the following legislation (where applicable to it):</p>
+<ul>
+  <li>Basic Conditions of Employment Act 75 of 1997</li>
+  <li>Broad-Based Black Economic Empowerment Act 53 of 2003</li>
+  <li>Companies Act 71 of 2008</li>
+  <li>Compensation for Occupational Injuries and Diseases Act 130 of 1993</li>
+  <li>Customs and Excise Act 91 of 1964</li>
+  <li>Employment Equity Act 55 of 1998</li>
+  <li>Income Tax Act 58 of 1962</li>
+  <li>Labour Relations Act 66 of 1995</li>
+  <li>Occupational Health and Safety Act 85 of 1993</li>
+  <li>Protection of Personal Information Act 4 of 2013</li>
+  <li>Skills Development Act 97 of 1998 and Skills Development Levies Act 9 of 1999</li>
+  <li>Tax Administration Act 28 of 2011</li>
+  <li>Unemployment Insurance Act 63 of 2001 and Unemployment Insurance Contributions Act 4 of 2002</li>
+  <li>Value-Added Tax Act 89 of 1991</li>
+</ul>
+<p>Records required by legislation are not automatically available – a request under PAIA may still be needed.</p>
+
+<h2>7. Subjects and categories of records held</h2>
+<table>
+  <tr><th>Subject</th><th>Categories of records</th></tr>
+  <tr><td>Company secretarial</td><td>Memorandum of Incorporation, registration documents, share register, minutes and resolutions of directors and shareholders</td></tr>
+  <tr><td>Finance and tax</td><td>Annual financial statements, accounting records, bank statements, invoices, tax and VAT returns and assessments, customs and import documentation</td></tr>
+  <tr><td>Human resources</td><td>Employment contracts, personnel files, payroll and tax records, leave records, disciplinary records, training records, employment equity records, UIF and COIDA records</td></tr>
+  <tr><td>Customers</td><td>Customer contact details, quotations, orders, contracts, correspondence, invoices and statements</td></tr>
+  <tr><td>Suppliers</td><td>Supplier contact details, agreements, purchase orders, invoices, import and shipping documents</td></tr>
+  <tr><td>Information technology</td><td>IT policies, system and licence records, security and access records</td></tr>
+  <tr><td>Compliance</td><td>POPIA policy, processing register, operator agreements, retention schedule, incident and request registers, this manual</td></tr>
+</table>
+
+<h2>8. Processing of personal information (POPIA)</h2>
+<h3>8.1 Purposes and categories of data subjects</h3>
+<table>
+  <tr><th>Data subjects</th><th>Personal information</th><th>Purpose</th></tr>
+  {% for a in activities %}<tr><td>{{ a.data_subjects }}</td><td>{{ a.personal_info }}</td><td>{{ a.purpose }}</td></tr>
+  {% empty %}<tr><td colspan="3"><mark class="ph">[Complete the Processing register]</mark></td></tr>{% endfor %}
+</table>
+<h3>8.2 Recipients</h3>
+<ul>
+  {% for a in activities %}{% if a.recipients %}<li><strong>{{ a.name }}:</strong> {{ a.recipients }}</li>{% endif %}{% endfor %}
+  {% for o in operators %}<li><strong>{{ o.name }}</strong> (service provider) – {{ o.service }}</li>{% endfor %}
+</ul>
+<h3>8.3 Planned transborder flows</h3>
+{% if overseas %}
+<p>Personal information may be stored or processed outside South Africa by the following service providers, subject to section 72 of POPIA:</p>
+<ul>{% for o in overseas %}<li>{{ o.name }} – {{ o.data_location|default:"outside South Africa" }} ({{ o.get_transfer_basis_display }})</li>{% endfor %}</ul>
+{% else %}<p>The Company does not plan to transfer personal information outside South Africa.</p>{% endif %}
+<h3>8.4 Security measures</h3>
+<p>The Company applies appropriate, reasonable technical and organisational measures to secure personal information, including access control and multi-factor authentication, device encryption, anti-malware and patching, secure backups, physical security of paper records, confidentiality undertakings, written agreements with operators, staff awareness training and a security compromise response plan.</p>
+
+<h2>9. How to request access to a record</h2>
+<ol>
+  <li>Complete the prescribed request form (Form 2 of the PAIA Regulations, available from the Regulator's website or from the Information Officer) and send it to the Information Officer at the contact details above.</li>
+  <li>Provide proof of identity, and, if requesting on behalf of someone else, proof of your authority.</li>
+  <li>Indicate the form of access required (copy, inspection, electronic) and how you wish to be informed of the decision.</li>
+  <li>Identify the right you are seeking to exercise or protect and explain why the record is required for that purpose.</li>
+  <li>The Company will decide within 30 days, which may be extended once by up to 30 days with written notice and reasons.</li>
+</ol>
+
+<h2>10. Fees</h2>
+<p>A requester seeking their own personal information does not pay a request fee. Other requesters pay the request fee prescribed in the PAIA Regulations and, if access is granted, access fees for reproduction, search and preparation as prescribed. The Information Officer will notify the requester of any fee payable and of any deposit required before processing the request.</p>
+
+<h2>11. Grounds for refusal and remedies</h2>
+<p>The Company may refuse access only on the grounds in Chapter 4 of Part 3 of PAIA – for example to protect the privacy of third parties, commercial information of third parties, confidential information, the safety of individuals and property, legally privileged records, or the Company's own commercial information. A requester who is dissatisfied with a decision may lodge a complaint with the Regulator ({{ regulator.paia_complaints }}) or apply to court within 180 days of the decision.</p>
+
+<h2>12. Availability and updating of this manual</h2>
+<p>This manual is available on the Company's website{% if c.website %} ({{ c.website }}){% endif %}, at its principal place of business for inspection during normal business hours, and to the Regulator on request. It is reviewed at least annually and updated whenever material changes occur.</p>
+
+{% include "compliance/documents/_sig.html" with left="Head of the Company" left_name=c.head_name right="Information Officer" right_name=c.io_name %}

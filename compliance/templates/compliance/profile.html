@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Company profile{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Company profile</h1>
+  <p class="lead">These details are used in all your generated documents (PAIA manual, privacy notices, policy). Profile {{ profile.completeness }}% complete.</p>
+</div>
+<div class="callout">
+  <strong>Who is the Information Officer?</strong> In a private business the Information Officer is automatically the head – the sole owner, CEO or managing director – unless the head authorises another employee in writing. If you run the business yourself, you are most likely the Information Officer. <a href="{% url 'compliance:learn_topic' 'officer' %}">Learn more</a>.
+</div>
+<form method="post" class="card">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="flash flash-error">{{ form.non_field_errors }}</div>{% endif %}
+  {% for title, fields in sections %}
+    <fieldset>
+      <legend>{{ title }}</legend>
+      {% if title == "Information Officer" %}<p class="help">Register the Information Officer free of charge at <a href="https://eservices.inforegulator.org.za" target="_blank" rel="noopener">eservices.inforegulator.org.za</a>, then tick "registered" and record the date.</p>{% endif %}
+      <div class="grid grid-2">{% for field in fields %}{% include "includes/field.html" %}{% endfor %}</div>
+    </fieldset>
+  {% endfor %}
+  <div class="form-actions"><button class="btn btn-primary" type="submit">Save profile</button></div>
+</form>
+{% endblock %}

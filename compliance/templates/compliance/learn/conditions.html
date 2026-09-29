@@ -1,0 +1,33 @@
+{% extends "compliance/learn/base.html" %}
+{% block article %}
+<p>POPIA's core is eight "conditions for lawful processing". Every time you handle personal information, all eight apply.</p>
+<h2>1. Accountability (s8)</h2>
+<p>You are responsible for compliance – including what your service providers do with information you give them. Keep evidence: this app's registers, checklist notes and audit log are that evidence.</p>
+<h2>2. Processing limitation (s9–s12)</h2>
+<ul>
+  <li><strong>Lawful ground (s11)</strong> – you need one of: consent; necessary for a contract with the person; required by law; protects the person's legitimate interest; or your legitimate interest (balanced against the person's rights).</li>
+  <li><strong>Minimality (s10)</strong> – collect only what you need. Don't ask for ID numbers "just in case".</li>
+  <li><strong>Objection (s11(3))</strong> – people can object to processing based on legitimate interest, and to direct marketing, at any time.</li>
+  <li><strong>Collect directly (s12)</strong> – from the person themselves, unless an exception applies (e.g. public records, consent).</li>
+</ul>
+<h2>3. Purpose specification (s13–s14)</h2>
+<p>Collect for a specific, defined purpose and tell the person. Don't keep records longer than needed – unless a law says you must (see the <a href="{% url 'compliance:retention_list' %}">retention schedule</a>). Then destroy or de-identify them.</p>
+<h2>4. Further processing limitation (s15)</h2>
+<p>Any new use must be compatible with the original purpose. Using a job applicant's CV to send them marketing is not compatible.</p>
+<h2>5. Information quality (s16)</h2>
+<p>Take reasonable steps to keep information complete, accurate and up to date.</p>
+<h2>6. Openness (s17–s18)</h2>
+<p>Document your processing (processing register + PAIA manual) and tell people, at collection, who you are, what you collect, why, whether it's mandatory, who receives it, cross-border transfers and their rights (privacy notices).</p>
+<h2>7. Security safeguards (s19–s22)</h2>
+<p>Take appropriate, reasonable technical and organisational measures to prevent loss, damage and unauthorised access. Identify risks, put controls in place, check they work, and keep updating them. Bind operators by contract. Report breaches.</p>
+<h2>8. Data subject participation (s23–s25)</h2>
+<p>People may ask what you hold about them, and ask you to correct or delete it.</p>
+<h2>Plus: special rules</h2>
+<ul>
+  <li><strong>Special personal information and children</strong> (s26–s35) – prohibited unless an exception applies.</li>
+  <li><strong>Direct marketing by electronic communication</strong> (s69) – opt-in consent or existing customers only.</li>
+  <li><strong>Automated decision-making</strong> (s71).</li>
+  <li><strong>Transfers outside South Africa</strong> (s72).</li>
+  <li><strong>Prior authorisation</strong> from the Regulator for certain high-risk processing (s57).</li>
+</ul>
+{% endblock %}

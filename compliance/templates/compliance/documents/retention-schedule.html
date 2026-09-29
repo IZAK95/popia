@@ -1,0 +1,16 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Records Retention Schedule" ref="POPIA s14" %}
+<p>Personal information may not be kept longer than necessary to achieve the purpose for which it was collected, unless retention is required or authorised by law, reasonably required for lawful business purposes, required by contract, or the data subject has consented (POPIA s14). This schedule sets the minimum and maximum periods for {{ c.legal_name|ph:"Registered name" }}. Records are destroyed or de-identified at the end of the period in a way that prevents reconstruction.</p>
+<table>
+  <tr><th>Record</th><th>Examples</th><th>Keep for</th><th>Counted from</th><th>Source</th></tr>
+  {% for r in retention %}<tr><td>{{ r.record_type }}</td><td>{{ r.examples }}</td><td><strong>{{ r.period }}</strong></td><td>{{ r.starts_from }}</td><td>{{ r.legal_source }}{% if r.kind == "policy" %} <em>(policy)</em>{% endif %}</td></tr>{% endfor %}
+</table>
+<h2>Destruction</h2>
+<ul>
+  <li>Paper: cross-cut shredding or a certified shredding service (keep the certificate).</li>
+  <li>Electronic: permanent deletion, including from shared drives, email and recycle bins; backups age out through normal rotation.</li>
+  <li>Devices: secure wipe or physical destruction before disposal or resale.</li>
+</ul>
+<h2>Legal holds</h2>
+<p>Where records are relevant to litigation, an investigation or an audit (e.g. a SARS verification), destruction is suspended until the matter is concluded.</p>
+<p class="doc-meta">Legal minimum periods are based on South African legislation as researched in September 2026. Confirm with your accountant or attorney.</p>

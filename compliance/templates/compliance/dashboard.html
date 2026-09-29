@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{% if profile.legal_name or profile.trading_name %}{{ profile.display_name }} – {% endif %}POPIA dashboard</h1>
+  <div class="actions">
+    <a class="btn" href="{% url 'compliance:request_create' %}">+ Log a request</a>
+    <a class="btn btn-danger" href="{% url 'compliance:incident_create' %}">Report an incident</a>
+  </div>
+</div>
+
+{% if is_new %}
+<div class="callout">
+  <h2>Welcome – start here</h2>
+  <p>POPIA (the Protection of Personal Information Act) governs how your business collects, uses, stores and deletes information about people – your employees, customers, suppliers and their contact persons. This app is your compliance framework: it tells you what to do, in what order, and keeps the evidence.</p>
+  <ol>
+    <li><a href="{% url 'compliance:learn_topic' 'basics' %}">Read "What is POPIA?"</a> (5 minutes).</li>
+    <li><a href="{% url 'compliance:profile' %}">Fill in your company profile</a> – it feeds all your documents.</li>
+    <li>Work through the <a href="{% url 'compliance:checklist' %}">compliance checklist</a>, essentials first. Each step explains why and how.</li>
+  </ol>
+</div>
+{% endif %}
+
+<div class="grid grid-2">
+  <section class="card">
+    <h2>Compliance progress</h2>
+    <div class="ring">
+      <span class="big">{{ essential.percent }}%</span>
+      <div>
+        <strong>Essentials: {{ essential.done }} of {{ essential.total }} done</strong><br>
+        <span class="muted small">Overall {{ overall.done }} of {{ overall.total }} applicable items ({{ overall.percent }}%)</span>
+      </div>
+    </div>
+    <hr>
+    {% for area in areas %}
+      <div class="area-row">
+        <a href="{% url 'compliance:checklist' %}#{{ area.code }}">{{ area.label }}</a>
+        <progress value="{{ area.done }}" max="{{ area.total|default:1 }}"></progress>
+        <span>{{ area.done }}/{{ area.total }}</span>
+      </div>
+    {% endfor %}
+  </section>
+
+  <section class="card">
+    <h2>Needs your attention</h2>
+    {% if alerts or drafts %}
+      <ul class="alerts">
+        {% for level, text, url, pk in alerts %}
+          <li><span class="dot {{ level }}"></span><span>{% if url %}<a href="{% if pk %}{% url url pk %}{% else %}{% url url %}{% endif %}">{{ text }}</a>{% else %}{{ text }}{% endif %}</span></li>
+        {% endfor %}
+        {% if drafts %}<li><span class="dot warn"></span><span>{{ drafts }} example entr{{ drafts|pluralize:"y,ies" }} still marked <em>Draft</em> in your registers – review them so they reflect your business: <a href="{% url 'compliance:activity_list' %}">processing</a>, <a href="{% url 'compliance:operator_list' %}">operators</a>, <a href="{% url 'compliance:risk_list' %}">risks</a>.</span></li>{% endif %}
+      </ul>
+    {% else %}
+      <p class="muted">Nothing urgent. 🎉</p>
+    {% endif %}
+  </section>
+</div>
+
+<div class="stats">
+  <a class="stat" href="{% url 'compliance:activity_list' %}"><span class="num">{{ counts.activities }}</span><span class="lbl">Processing activities</span></a>
+  <a class="stat" href="{% url 'compliance:operator_list' %}"><span class="num">{{ counts.operators }}</span><span class="lbl">Operators</span></a>
+  <a class="stat" href="{% url 'compliance:request_list' %}"><span class="num">{{ counts.open_requests }}</span><span class="lbl">Open requests</span></a>
+  <a class="stat" href="{% url 'compliance:incident_list' %}"><span class="num">{{ counts.open_incidents }}</span><span class="lbl">Open incidents</span></a>
+  <a class="stat" href="{% url 'compliance:risk_list' %}"><span class="num">{{ counts.high_risks }}</span><span class="lbl">High risks</span></a>
+</div>
+
+<div class="grid grid-2">
+  <section class="card">
+    <h2>Your next steps</h2>
+    {% if next_steps %}
+      <ul class="check-list">
+        {% for item in next_steps %}
+          <li><a href="{% url 'compliance:checklist_item' item.pk %}"><span class="check-code">{{ item.code }}</span><span>{{ item.title }}</span><span class="badge {% if item.status == 'progress' %}info{% endif %}">{{ item.get_status_display }}</span></a></li>
+        {% endfor %}
+      </ul>
+      <p class="small"><a href="{% url 'compliance:checklist' %}">See the full checklist →</a></p>
+    {% else %}
+      <p>All essential items are done. Keep up the yearly review and the recurring tasks.</p>
+    {% endif %}
+  </section>
+  <section class="card">
+    <h2>Upcoming deadlines</h2>
+    {% if upcoming %}
+      <ul class="alerts">
+        {% for task in upcoming %}
+          <li><span class="dot {% if task.is_overdue %}bad{% else %}ok{% endif %}"></span><span><strong>{{ task.due_date|date:"j M Y" }}</strong> – {{ task.title }}</span></li>
+        {% endfor %}
+      </ul>
+      <p class="small"><a href="{% url 'compliance:task_list' %}">All tasks →</a></p>
+    {% else %}
+      <p class="muted">No open tasks.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

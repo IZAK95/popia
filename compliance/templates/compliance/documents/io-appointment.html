@@ -1,0 +1,27 @@
+{% load compliance_tags %}
+{% include "compliance/documents/_header.html" with title="Appointment of Information Officer" ref="POPIA s55–s56; PAIA s1, s17" %}
+<p>To: {{ c.io_name|ph:"Information Officer name" }}{% if c.io_title %}, {{ c.io_title }}{% endif %}</p>
+<p>In terms of the Protection of Personal Information Act 4 of 2013 (POPIA) and the Promotion of Access to Information Act 2 of 2000 (PAIA), the head of a private body is its Information Officer, and may authorise another person to act as such.</p>
+<p>I, {{ c.head_name|ph:"Head of business" }}, as head of {{ c.legal_name|ph:"Registered name" }} ("the Company"), hereby {% if c.io_name and c.io_name == c.head_name %}confirm that I will act as{% else %}authorise you to act as{% endif %} the Information Officer of the Company with effect from {{ today|date:"j F Y" }}.</p>
+
+<h2>Duties</h2>
+<p>The Information Officer's duties include (POPIA s55 and regulation 4):</p>
+<ol>
+  <li>encouraging compliance by the Company with the conditions for the lawful processing of personal information;</li>
+  <li>dealing with requests made to the Company under POPIA and PAIA;</li>
+  <li>working with the Information Regulator in relation to investigations;</li>
+  <li>otherwise ensuring compliance by the Company with POPIA;</li>
+  <li>developing, implementing, monitoring, maintaining and continuously improving a compliance framework;</li>
+  <li>ensuring that a personal information impact assessment is done;</li>
+  <li>developing internal measures and adequate systems to process requests for information or access;</li>
+  <li>ensuring that internal awareness sessions are conducted;</li>
+  <li>maintaining the Company's PAIA manual and submitting the annual PAIA report to the Regulator.</li>
+</ol>
+<p>The Information Officer must be registered with the Information Regulator before taking up these duties (s55(2)). Registration is done on the Regulator's eServices portal ({{ regulator.portal }}).</p>
+{% if c.deputy_io_name %}
+<h2>Deputy Information Officer</h2>
+<p>{{ c.deputy_io_name }} is designated as Deputy Information Officer in terms of section 56 of POPIA and section 17 of PAIA, to assist the Information Officer and to act in their absence.</p>
+{% endif %}
+<p>The head of the Company retains ultimate accountability for compliance.</p>
+
+{% include "compliance/documents/_sig.html" with left="Head of the Company" left_name=c.head_name right="Accepted: Information Officer" right_name=c.io_name %}

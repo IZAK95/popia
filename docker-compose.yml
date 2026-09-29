@@ -1,0 +1,52 @@
+# Production on a Hetzner server: Caddy terminates HTTPS (automatic Let's Encrypt
+# certificates) and proxies to the app. Usage: see README.md → "Deploy on Hetzner".
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DEBUG: "0"
+      ALLOWED_HOSTS: ${DOMAIN},localhost,127.0.0.1
+      CSRF_TRUSTED_ORIGINS: https://${DOMAIN}
+    volumes:
+      - app-data:/data
+      - app-backups:/backups
+    expose:
+      - "8000"
+
+  backup:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DEBUG: "0"
+    entrypoint: []
+    command: ["python", "manage.py", "backup_db", "--loop", "--keep-days", "30"]
+    volumes:
+      - app-data:/data
+      - app-backups:/backups
+    depends_on:
+      - app
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+
+volumes:
+  app-data:
+  app-backups:
+  caddy-data:
+  caddy-config:

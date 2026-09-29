@@ -1,0 +1,27 @@
+{% load compliance_tags %}
+<p class="doc-meta">{{ c.legal_name|ph:"Registered name" }} · {{ c.physical_address|ph:"Physical address" }}</p>
+<h1>Notice of a security compromise affecting your personal information</h1>
+<p><mark class="ph">[Date]</mark></p>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>We are writing to inform you, as required by section 22 of the Protection of Personal Information Act 4 of 2013, of a security compromise that affected your personal information.</p>
+<h2>What happened</h2>
+<p><mark class="ph">[On (date), we discovered that ... Describe briefly and plainly.]</mark></p>
+<h2>What information was involved</h2>
+<p><mark class="ph">[e.g. your name, email address, ID number and bank account details]</mark></p>
+<h2>Possible consequences</h2>
+<p><mark class="ph">[e.g. You may receive phishing emails or calls pretending to be from us or your bank; someone could attempt to use your identity to open accounts.]</mark></p>
+<h2>What we have done</h2>
+<p><mark class="ph">[e.g. We reset all passwords, enabled additional security, reported the matter to SAPS (case no.) and notified the Information Regulator.]</mark></p>
+<h2>What you can do</h2>
+<ul>
+  <li>Be cautious of unexpected emails, SMSes or calls asking for information or payment – we will never ask for your password.</li>
+  <li>Monitor your bank accounts and report suspicious transactions to your bank.</li>
+  <li>Consider placing a free protective listing with the Southern African Fraud Prevention Service (SAFPS) if your ID number was involved.</li>
+  <li><mark class="ph">[Any other specific recommendation]</mark></li>
+</ul>
+<h2>Who may have the information</h2>
+<p><mark class="ph">[If known, the identity of the unauthorised person – otherwise state that it is not known.]</mark></p>
+<h2>Contact us</h2>
+<p>If you have questions, contact our Information Officer, {{ c.io_name|ph:"Information Officer name" }}, at {{ c.io_email|ph:"IO email" }}{% if c.io_phone %} or {{ c.io_phone }}{% endif %}. You also have the right to lodge a complaint with the Information Regulator ({{ regulator.popia_complaints }}).</p>
+<p>We sincerely apologise for this incident.</p>
+<p>Yours faithfully<br><br>{{ c.io_name|ph:"Information Officer name" }}<br>Information Officer, {{ c.legal_name|ph:"Registered name" }}</p>

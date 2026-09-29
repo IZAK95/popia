@@ -1,0 +1,38 @@
+# Run on your own computer. Only reachable from this machine at http://localhost:8000
+#
+# Recommended on Ubuntu without full-disk encryption: keep the data in an encrypted
+# LUKS vault and start/stop the app with scripts/popia-vault.sh (see README).
+# Otherwise: docker compose -f docker-compose.local.yml up -d --build
+#
+# restart is "no" on purpose: the app must only start after the vault is unlocked.
+services:
+  app:
+    build: .
+    restart: "no"
+    env_file: .env
+    environment:
+      DEBUG: "0"
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      LOCAL_HTTP: "1"
+      PROXY_COUNT: "0"
+      REQUIRE_VAULT: ${REQUIRE_VAULT:-0}
+    volumes:
+      - ${POPIA_DATA_DIR:-./data}:/data
+      - ${POPIA_BACKUP_DIR:-./backups}:/backups
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  backup:
+    build: .
+    restart: "no"
+    env_file: .env
+    environment:
+      DEBUG: "0"
+      REQUIRE_VAULT: ${REQUIRE_VAULT:-0}
+    entrypoint: []
+    command: ["python", "manage.py", "backup_db", "--loop", "--keep-days", "30"]
+    volumes:
+      - ${POPIA_DATA_DIR:-./data}:/data
+      - ${POPIA_BACKUP_DIR:-./backups}:/backups
+    depends_on:
+      - app

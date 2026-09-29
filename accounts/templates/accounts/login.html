@@ -1,0 +1,14 @@
+{% extends "auth_base.html" %}
+{% block content %}
+<h1>Sign in</h1>
+<p class="muted">This app holds personal information. Access is limited to authorised users.</p>
+{% if form.non_field_errors %}<div class="flash flash-error">{% for e in form.non_field_errors %}{{ e }}{% endfor %}</div>{% endif %}
+<form method="post">
+  {% csrf_token %}
+  {% include "includes/field.html" with field=form.username %}
+  {% include "includes/field.html" with field=form.password %}
+  <input type="hidden" name="next" value="{{ next }}">
+  <button class="btn btn-primary btn-block" type="submit">Continue</button>
+</form>
+<p class="small muted">After 5 failed attempts the account is locked for an hour.</p>
+{% endblock %}

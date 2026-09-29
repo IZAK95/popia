@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Delete {{ object }}{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Delete {{ register.singular }}?</h1></div>
+<div class="card narrow">
+  <p>You are about to permanently delete <strong>{{ object }}</strong>. The deletion is recorded in the audit log.</p>
+  <form method="post">{% csrf_token %}
+    <div class="form-actions">
+      <button class="btn btn-danger" type="submit">Yes, delete</button>
+      <a class="btn" href="{% url urls.detail object.pk %}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

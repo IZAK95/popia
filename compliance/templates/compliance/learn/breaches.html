@@ -1,0 +1,25 @@
+{% extends "compliance/learn/base.html" %}
+{% block article %}
+<p>POPIA calls a data breach a <strong>security compromise</strong>. Section 22 applies when there are <strong>reasonable grounds to believe that personal information has been accessed or acquired by an unauthorised person</strong>.</p>
+<div class="callout warn"><p><strong>Important difference from Europe:</strong> POPIA has no "unlikely to result in harm" exemption. If the test above is met, you must notify both the Regulator and the affected people – even for a single misdirected email.</p></div>
+<h2>Who, when and how</h2>
+<ul>
+  <li><strong>When:</strong> as soon as reasonably possible after discovery, taking into account law-enforcement needs and the steps needed to establish the scope and restore integrity. There is no fixed number of hours, but think days, not weeks.</li>
+  <li><strong>The Regulator:</strong> via form SCN1 on the <a href="https://eservices.inforegulator.org.za" target="_blank" rel="noopener">eServices portal</a> – mandatory since 1 April 2025 (email submissions are no longer accepted).</li>
+  <li><strong>The affected people:</strong> in writing – email, letter, prominent website notice or news media – with enough information to protect themselves: possible consequences, what you've done, what they should do, and the identity of the unauthorised person if known.</li>
+  <li><strong>Operators</strong> must tell you immediately if they have a breach involving your information (s21(2)).</li>
+</ul>
+<h2>Examples</h2>
+<table>
+  <tr><th>Situation</th><th>Notifiable?</th></tr>
+  <tr><td>Unencrypted laptop with HR files stolen from a car</td><td>Yes</td></tr>
+  <tr><td>Encrypted, password-protected laptop lost; remote-wiped</td><td>Usually no – record the reasoning</td></tr>
+  <tr><td>Payslip emailed to the wrong employee who opened it</td><td>Yes</td></tr>
+  <tr><td>Email account hacked via phishing; mailbox contains customer data</td><td>Yes (the attacker had access)</td></tr>
+  <tr><td>Ransomware encrypted files; attackers claim to have copied them</td><td>Yes</td></tr>
+  <tr><td>Staff member viewed colleague's medical file without need</td><td>Yes</td></tr>
+</table>
+<h2>Numbers</h2>
+<p>The Regulator received 2,374 security compromise notifications in 2024/25 and a 40% year-on-year increase in early 2025/26, and is building a dedicated team to scrutinise breach handling. Preparing now – encryption, MFA and a plan – is far cheaper than responding later.</p>
+<p>See the <a href="{% url 'compliance:document' 'breach-plan' %}">Security compromise response plan</a> and log incidents in <a href="{% url 'compliance:incident_list' %}">Incidents</a>.</p>
+{% endblock %}

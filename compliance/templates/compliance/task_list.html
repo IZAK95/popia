@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Tasks & deadlines{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Tasks &amp; deadlines</h1>
+  <div class="actions"><a class="btn btn-primary" href="{% url urls.create %}">+ Add task</a></div>
+  <p class="lead">{{ register.intro }}</p>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Due</th><th>Task</th><th>Repeats</th><th></th></tr></thead>
+    <tbody>
+      {% for task in open_tasks %}
+        <tr>
+          <td>{% if task.is_overdue %}<span class="badge bad">{{ task.due_date|date:"j M Y" }}</span>{% else %}{{ task.due_date|date:"j M Y" }}{% endif %}</td>
+          <td><a class="rowlink" href="{% url urls.update task.pk %}">{{ task.title }}</a>{% if task.details %}<div class="small muted">{{ task.details }}</div>{% endif %}{% if task.link %}<div class="small"><a href="{% url task.link %}">Open related page →</a></div>{% endif %}</td>
+          <td>{{ task.get_recurrence_display }}</td>
+          <td><form method="post" action="{% url 'compliance:task_complete' task.pk %}">{% csrf_token %}<button class="btn btn-sm" type="submit">Mark done</button></form></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="empty">No open tasks.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if done_tasks %}
+<h2>Recently completed</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Completed</th><th>Task</th></tr></thead>
+    <tbody>{% for task in done_tasks %}<tr><td>{{ task.done_on|date:"j M Y" }}</td><td>{{ task.title }}</td></tr>{% endfor %}</tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

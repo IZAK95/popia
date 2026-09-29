@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ register.title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ register.title }}</h1>
+  <div class="actions"><a class="btn btn-primary" href="{% url urls.create %}">+ Add {{ register.singular }}</a></div>
+  <p class="lead">{{ register.intro }}{% if register.help_page %} <a href="{% url 'compliance:learn_topic' register.help_page %}">Learn more</a>.{% endif %}</p>
+</div>
+{% if drafts %}<div class="callout warn">{{ drafts }} entr{{ drafts|pluralize:"y is,ies are" }} still <strong>drafts</strong> (examples added by the app). Open each one, correct it for your business and set Review status to <em>Confirmed</em> – or delete it if it doesn't apply.</div>{% endif %}
+{% block before_table %}{% endblock %}
+<div class="table-wrap">
+  <table>
+    <thead><tr>{% for col in register.columns %}<th>{{ col.label }}</th>{% endfor %}</tr></thead>
+    <tbody>
+      {% for obj, cells in rows %}
+        <tr>
+          {% for cell in cells %}
+            <td>{% if forloop.first %}<a class="rowlink" href="{% url urls.detail obj.pk %}">{{ cell.text }}</a>{% elif cell.badge %}<span class="badge {{ cell.badge }}">{{ cell.text }}</span>{% else %}{{ cell.text|truncatechars:90 }}{% endif %}</td>
+          {% endfor %}
+        </tr>
+      {% empty %}
+        <tr><td colspan="{{ register.columns|length }}" class="empty">Nothing here yet. <a href="{% url urls.create %}">Add the first {{ register.singular }}</a>.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Check migrations are up to date
+        run: python manage.py makemigrations --check --dry-run
+        env:
+          DEBUG: "1"
+      - name: Run tests
+        run: python manage.py test
+        env:
+          DEBUG: "1"
+      - name: Production settings check
+        run: python manage.py check --deploy --fail-level ERROR
+        env:
+          SECRET_KEY: ci-only-${{ github.run_id }}-not-a-real-secret-key-value-1234567890
+          ALLOWED_HOSTS: example.co.za
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: shellcheck scripts/*.sh docker/entrypoint.sh
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t popia:ci .
+      - name: Start container and check health
+        run: |
+          docker run -d --name popia -p 8000:8000 \
+            -e SECRET_KEY=ci-only-secret-key-value-1234567890abcdef \
+            -e LOCAL_HTTP=1 -e PROXY_COUNT=0 -e ALLOWED_HOSTS=localhost,127.0.0.1 popia:ci
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8000/healthz && exit 0; sleep 1; done
+          docker logs popia; exit 1
+      - name: Refuses to start with a locked vault
+        run: |
+          mkdir -p /tmp/locked
+          if docker run --rm -e SECRET_KEY=x -e REQUIRE_VAULT=1 -v /tmp/locked:/data popia:ci true; then
+            echo "App started without the vault marker"; exit 1
+          fi

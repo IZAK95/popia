@@ -40,16 +40,64 @@ The app stores personal information, so it is locked down:
 | --- | --- | --- |
 | Reach it from | Only that computer | Anywhere (phone, laptop) |
 | Data location | South Africa, so no cross-border transfer | Germany or Finland: a POPIA s72 transfer, allowed but it must be documented |
-| Your responsibilities | Turn on disk encryption, back up the `backups` folder | Keep the server updated, accept Hetzner's DPA |
+| Your responsibilities | Encrypt the data (disk encryption or the Ubuntu vault), back up the `backups` folder | Keep the server updated, accept Hetzner's DPA |
 | Setup effort | ~10 minutes | ~30 minutes |
 
 For a single user, **running it on your own computer is simpler and lower-risk**. Your published documents (PAIA
 manual, privacy notice) go on your public website either way. The app itself never needs to be public.
 
-### Option A: your own computer (Windows, Mac or Linux)
+### Option A1: Ubuntu without full-disk encryption (encrypted vault)
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and turn on **full-disk encryption**
-   (BitLocker on Windows, FileVault on Mac).
+Ubuntu can only turn on full-disk encryption (LUKS) during installation. If reinstalling isn't practical,
+`scripts/popia-vault.sh` keeps the app's database and backups in an encrypted **LUKS container**, a
+password-protected file that's only readable while it's unlocked. While the vault is locked, the app refuses to
+start, so nothing is ever written to the unencrypted disk.
+
+1. Install Docker and the encryption tools, then log out and back in:
+   ```bash
+   sudo apt update && sudo apt install -y cryptsetup git curl
+   curl -fsSL https://get.docker.com | sudo sh
+   sudo usermod -aG docker $USER
+   ```
+2. Get the app and create your settings file:
+   ```bash
+   git clone <this-repository-url> ~/popia && cd ~/popia
+   cp .env.example .env && nano .env
+   ```
+   Set `SECRET_KEY` (run `python3 -c "import secrets; print(secrets.token_urlsafe(50))"`), `ADMIN_USERNAME` and
+   `ADMIN_PASSWORD`. The password must be at least 12 characters.
+3. Create the vault. This is a one-time step:
+   ```bash
+   scripts/popia-vault.sh create
+   ```
+   Choose a strong passphrase and **save it in your password manager**. If you lose it, the data can't be
+   recovered. The script creates `~/popia-vault.img` (2 GB), updates `.env` to use it and starts the app.
+4. Open <http://localhost:8000>, sign in and scan the QR code with an authenticator app. Then remove
+   `ADMIN_PASSWORD` from `.env` and delete the "Hetzner Online GmbH" entry from **Operators** in the app.
+
+Every day:
+
+```bash
+scripts/popia-vault.sh unlock   # after a reboot: asks for your passphrase, then starts the app
+scripts/popia-vault.sh lock     # when you're done: stops the app and locks the vault
+scripts/popia-vault.sh status
+```
+
+Backups: in Ubuntu's **Disks** app, format a USB stick with "Password protect volume (LUKS)". Then plug it in,
+unlock it, and run:
+
+```bash
+scripts/popia-vault.sh copy-backups /media/$USER/<usb-name>
+```
+
+Keep the USB stick somewhere other than next to the laptop. The vault protects the app's data, but not other
+files on the laptop, such as email attachments or downloads. Keep those in the cloud rather than on the disk, and
+plan full-disk encryption for your next reinstall or new laptop.
+
+### Option A2: your own computer with disk encryption (Windows, Mac or Linux)
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure **full-disk
+   encryption** is on (BitLocker on Windows, FileVault on Mac, LUKS chosen at install on Linux).
 2. Download this repository and open a terminal in its folder.
 3. Create your settings file:
    ```bash
@@ -63,7 +111,8 @@ manual, privacy notice) go on your public website either way. The app itself nev
    ```bash
    docker compose -f docker-compose.local.yml up -d --build
    ```
-5. Open <http://localhost:8000>, sign in and scan the QR code with an authenticator app.
+5. Open <http://localhost:8000>, sign in and scan the QR code with an authenticator app. After a reboot, start the
+   app again with the same command. It doesn't start automatically.
 6. Remove `ADMIN_PASSWORD` from `.env`.
 7. In the app, delete the "Hetzner Online GmbH" entry from **Operators**, because you're not using Hetzner.
 

@@ -194,7 +194,11 @@ CHECKLIST = [
         "SEC-02", "security", True,
         "Encrypt laptops and phones",
         "A lost encrypted laptop is usually not a notifiable breach. An unencrypted one almost always is.",
-        "Turn on BitLocker (Windows) or FileVault (Mac); set phone PIN/biometric lock; enable remote wipe.",
+        "Windows: turn on BitLocker. Mac: turn on FileVault. Ubuntu: full-disk encryption (LUKS) can only be "
+        "chosen when installing – if reinstalling isn't practical now, keep personal information off the laptop's "
+        "disk (use email and files in the browser), store any local copies in an encrypted LUKS vault (this app's "
+        "scripts/popia-vault.sh does this for the app's own data), and plan full-disk encryption for the next "
+        "reinstall or new laptop.\nPhones: set a PIN/biometric lock and enable remote wipe.",
         "POPIA s19", "", "",
     ),
     (
@@ -535,7 +539,7 @@ RISKS = [
      "customer or banking details, or changes bank details on invoices.", 4, 4,
      "MFA on all email accounts; staff phishing awareness; verify bank detail changes by phone."),
     ("Lost or stolen laptop or phone", "A device with company email and files is lost or stolen.", 3, 4,
-     "Full-disk encryption (BitLocker/FileVault); screen lock; remote wipe; no local copies of HR files."),
+     "Full-disk encryption (BitLocker/FileVault/LUKS) or an encrypted vault for local files; screen lock; remote wipe; no local copies of HR files."),
     ("Ransomware", "Malware encrypts or steals files, making records unavailable or leaking them.", 3, 5,
      "Automatic updates; anti-malware; offline/immutable backups tested quarterly; least-privilege accounts."),
     ("Email sent to the wrong person", "Payslips, CVs or customer details emailed to the wrong recipient.", 3, 3,

@@ -85,8 +85,18 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", BASE_DIR / "data"))
-DATA_DIR.mkdir(parents=True, exist_ok=True)
 BACKUP_DIR = Path(os.environ.get("BACKUP_DIR", BASE_DIR / "backups"))
+
+# REQUIRE_VAULT=1: the data lives in an encrypted LUKS container (scripts/popia-vault.sh).
+# Refuse to start when the vault is locked, so nothing is ever written to the unencrypted disk.
+VAULT_MARKER = ".popia-vault"
+if env_bool("REQUIRE_VAULT", False):
+    for directory in (DATA_DIR, BACKUP_DIR):
+        if not (directory / VAULT_MARKER).is_file():
+            raise ImproperlyConfigured(
+                f"{directory} is not inside the unlocked encrypted vault. Run: scripts/popia-vault.sh unlock"
+            )
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 DATABASES = {
     "default": {

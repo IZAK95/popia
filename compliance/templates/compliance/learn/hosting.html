@@ -5,7 +5,8 @@
 <ul>
   <li>Information stays in South Africa – no cross-border transfer for this app.</li>
   <li>Nothing is exposed to the internet; only reachable from that computer.</li>
-  <li>You <strong>must</strong> turn on full-disk encryption (BitLocker/FileVault) and keep backups (the app writes daily backups to the <code>backups</code> folder – copy them to an encrypted external drive or cloud folder).</li>
+  <li>You <strong>must</strong> encrypt the data: full-disk encryption (BitLocker on Windows, FileVault on Mac, LUKS on Ubuntu) – or, on Ubuntu without full-disk encryption, the encrypted vault created by <code>scripts/popia-vault.sh</code>. The app then refuses to start while the vault is locked, so nothing is written to the unencrypted disk.</li>
+  <li>Copy the daily backups to an encrypted USB drive regularly (<code>scripts/popia-vault.sh copy-backups</code>).</li>
   <li>Only available while that computer is on.</li>
 </ul>
 <h2>Option B – On a Hetzner server</h2>

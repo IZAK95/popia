@@ -252,6 +252,7 @@ legend { font-weight: 700; font-size: 1.05rem; margin-bottom: .75rem; }
 .filters { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
 .filters a { padding: .25rem .7rem; border-radius: 999px; border: 1px solid var(--border); text-decoration: none; color: var(--text); font-size: .86rem; background: var(--surface); }
 .filters a.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.card.reminders { margin-top: 1.25rem; }
 .steps-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
 .prose { max-width: 760px; }
 .prose li { margin-bottom: .35rem; }

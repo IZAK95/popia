@@ -20,7 +20,9 @@ urlpatterns = [
     path("export/", views.export, name="export"),
     path("export/json/", views.export_json, name="export_json"),
     path("export/backup/", views.backup_now, name="backup_now"),
+    path("export/backup/test/", views.backup_test, name="backup_test"),
     path("export/backup/<str:name>/", views.backup_download, name="backup_download"),
+    path("tasks/reminders/test/", views.reminder_test, name="reminder_test"),
     path("healthz", views.healthz, name="healthz"),
 ]
 

@@ -21,10 +21,12 @@ services:
     env_file: .env
     environment:
       DEBUG: "0"
+      APP_URL: ${APP_URL:-https://${DOMAIN}}  # link in reminder emails
     entrypoint: []
-    command: ["python", "manage.py", "backup_db", "--loop", "--keep-days", "30"]
+    # Daily jobs: a checked database backup and the reminder email (if EMAIL_HOST is set in .env).
+    command: ["python", "manage.py", "scheduler", "--keep-days", "30"]
     healthcheck:
-      disable: true  # the web health check doesn't apply to the backup loop
+      disable: true  # the web health check doesn't apply to the scheduler
     volumes:
       - app-data:/data
       - app-backups:/backups

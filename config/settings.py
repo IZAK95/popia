@@ -179,6 +179,19 @@ if not DEBUG and not LOCAL_HTTP:
     SECURE_HSTS_SECONDS = int(os.environ.get("HSTS_SECONDS", "31536000"))
     SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 
+# Email reminders (daily summary of deadlines). Off unless EMAIL_HOST is set.
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_SSL = env_bool("EMAIL_USE_SSL", EMAIL_PORT == 465)
+EMAIL_USE_TLS = env_bool("EMAIL_USE_TLS", not EMAIL_USE_SSL)
+EMAIL_TIMEOUT = 20  # a mail server that doesn't answer must not hang a page or the scheduler
+DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_FROM", EMAIL_HOST_USER or "popia@localhost")
+REMINDER_EMAIL = env_list("REMINDER_EMAIL")  # empty: send to the Information Officer's email in the profile
+REMINDER_HOUR = int(os.environ.get("REMINDER_HOUR", "7"))
+APP_URL = os.environ.get("APP_URL", "").rstrip("/")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

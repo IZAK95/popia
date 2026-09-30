@@ -23,6 +23,18 @@
     </tbody>
   </table>
 </div>
+<section class="card reminders">
+  <h2>Email reminders</h2>
+  {% if reminders.enabled and reminders.recipients %}
+    <p>On. Every day from {{ reminders.hour|stringformat:"02d" }}:00, if something is overdue or due within 7 days, a summary goes to <strong>{{ reminders.recipients|join:", " }}</strong>. It uses reference numbers only, never people's names.
+    {% if reminders.last %}Last sent {{ reminders.last.at|date:"j M Y, H:i" }}.{% endif %}</p>
+    <form method="post" action="{% url 'compliance:reminder_test' %}">{% csrf_token %}<button class="btn" type="submit">Send test email</button></form>
+  {% elif reminders.enabled %}
+    <p>Email is set up, but there's no one to send reminders to. Add the Information Officer's email in the <a href="{% url 'compliance:profile' %}">company profile</a>, or set <code>REMINDER_EMAIL</code> in <code>.env</code>.</p>
+  {% else %}
+    <p>Off. To get a daily email when a request or task is nearly due, add your mail server's details (<code>EMAIL_HOST</code> and the other <code>EMAIL_</code> settings) to <code>.env</code> and restart the app. The README explains how.</p>
+  {% endif %}
+</section>
 {% if done_tasks %}
 <h2>Recently completed</h2>
 <div class="table-wrap">

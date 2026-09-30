@@ -14,8 +14,15 @@
   </section>
   <section class="card">
     <h2>Database backups</h2>
-    <p>A backup runs automatically every 24 hours when deployed with Docker, keeping 30 days. You can also make one now.</p>
-    <form method="post" action="{% url 'compliance:backup_now' %}">{% csrf_token %}<button class="btn" type="submit">Create backup now</button></form>
+    <p>A backup runs automatically every day when deployed with Docker, keeping 30 days. Each one is checked when it's made.</p>
+    <p class="callout {% if health.level == 'bad' %}bad{% elif health.level == 'warn' %}warn{% endif %}">
+      {% if health.level == 'ok' %}Last backup {{ health.last_backup|date:"j M Y, H:i" }}.{% else %}{{ health.text }}{% if health.last_backup %} Last good backup: {{ health.last_backup|date:"j M Y, H:i" }}.{% endif %}{% endif %}
+    </p>
+    <div class="actions">
+      <form method="post" action="{% url 'compliance:backup_now' %}">{% csrf_token %}<button class="btn" type="submit">Create backup now</button></form>
+      {% if backups %}<form method="post" action="{% url 'compliance:backup_test' %}">{% csrf_token %}<button class="btn" type="submit">Test newest backup</button></form>{% endif %}
+    </div>
+    {% if backups %}<p class="help">The test unpacks the newest backup and checks that it opens and contains your records, the same as a real restore.</p>{% endif %}
     {% if backups %}
       <ul class="alerts">{% for name, size in backups %}<li><span class="dot ok"></span><a href="{% url 'compliance:backup_download' name %}">{{ name }}</a> <span class="muted small">{{ size|filesize }}</span></li>{% endfor %}</ul>
     {% else %}

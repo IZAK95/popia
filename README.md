@@ -30,7 +30,7 @@ The app stores personal information, so it is locked down:
 - After 5 failed logins, that username and IP address are locked out for 1 hour (django-axes).
 - Traffic is HTTPS only with HSTS. Cookies are secure and HttpOnly, sessions last 8 hours, and a strict Content-Security-Policy is set. Pages can't be embedded in other sites and search engines are told not to index them.
 - Every change is written to an audit log that can't be edited.
-- A backup is taken automatically every day and kept for 30 days.
+- A backup is taken automatically every day, checked, and kept for 30 days. The dashboard warns you if backups stop.
 
 ---
 
@@ -164,11 +164,30 @@ docker compose pull && docker compose up -d --build       # update after `git pu
 docker compose exec app python manage.py reset_2fa <user> # lost your phone: re-enrol 2FA at next login
 docker compose exec app python manage.py changepassword <user>
 docker compose exec app python manage.py backup_db        # extra backup now
+docker compose logs -f backup                             # daily backup and reminder activity
 ```
 (Add `-f docker-compose.local.yml` for the local setup.)
 
 **Restore a backup:** stop the app, then `gunzip` the chosen `popia-*.sqlite3.gz` and replace `popia.sqlite3` in the
-data volume or folder with it. Start the app again.
+data volume or folder with it. Start the app again. To check a backup without restoring it, use **Test newest
+backup** on the **Export & backup** page.
+
+### Email reminders (optional)
+
+The app can email you once a day when something needs attention: a request that is overdue or due within 7 days, a
+breach that still has to be reported, an overdue task, or backups that have stopped. Nothing is sent on days when
+nothing needs attention. The email goes through your mail provider, so it names records by reference number only
+(for example DSR-2026-003), never the person's name.
+
+1. Add your mail server to `.env` (see `.env.example`): `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER` and
+   `EMAIL_HOST_PASSWORD`. For Microsoft 365 use `smtp.office365.com` and port 587. For Gmail, create an
+   [app password](https://myaccount.google.com/apppasswords) and use `smtp.gmail.com`.
+2. Reminders go to the Information Officer's email in the company profile. To send them elsewhere, set
+   `REMINDER_EMAIL` (comma-separated).
+3. Restart the app, open **Tasks & deadlines** and click **Send test email**.
+
+On your own computer, reminders are only sent while the app is running. The daily email goes out the first time the
+app is running after 07:00 (change this with `REMINDER_HOUR`).
 
 ---
 

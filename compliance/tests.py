@@ -7,16 +7,16 @@ from io import StringIO
 from pathlib import Path
 from unittest import mock
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase, override_settings
+from django.core import mail
 from django.urls import reverse
 from django.utils import timezone
 from django_otp.oath import totp
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from . import documents
+from . import backups, documents, reminders
 from .models import (
     AuditEntry,
     ChecklistItem,
@@ -233,10 +233,127 @@ class AppTests(TestCase):
             stale = out / ".tmp-interrupted"  # left behind by a killed run
             stale.mkdir()
             os.utime(stale, (0, 0))
-            with mock.patch.dict(settings.DATABASES["default"], NAME=str(db)), self.settings(BACKUP_DIR=out):
+            with mock.patch("compliance.backups.database_path", return_value=str(db)), self.settings(BACKUP_DIR=out):
                 call_command("backup_db", stdout=StringIO())
-            files = list(out.iterdir())
+            files = sorted(out.iterdir())
+            self.assertEqual([f.name for f in files][0], backups.STATUS_FILE)
+            files = files[1:]
             self.assertEqual(len(files), 1, files)
             self.assertTrue(files[0].name.startswith("popia-"))
             with gzip.open(files[0]) as packed:
                 self.assertEqual(packed.read(16), b"SQLite format 3\x00")
+
+
+@override_settings(**TEST_SETTINGS, EMAIL_HOST="smtp.example.test", REMINDER_EMAIL=["io@example.test"], APP_URL="https://popia.example.test")
+class BackupHealthAndReminderTests(TestCase):
+    def setUp(self):
+        seed_all()
+        user = get_user_model().objects.create_user("owner", password="a-long-test-password")
+        device = TOTPDevice.objects.create(user=user, name="phone", confirmed=True)
+        self.client.login(username="owner", password="a-long-test-password")
+        self.client.post(reverse("accounts:two_factor_verify"), {"token": token_for(device)})
+
+        # The test database is in memory and locked by the test's transaction, so back up a real file.
+        folders = tempfile.TemporaryDirectory(), tempfile.TemporaryDirectory()
+        for folder in folders:
+            self.addCleanup(folder.cleanup)
+        self.db, self.out = Path(folders[0].name) / "popia.sqlite3", Path(folders[1].name)
+        conn = sqlite3.connect(self.db)
+        conn.execute("CREATE TABLE compliance_checklistitem (id)")
+        conn.executemany("INSERT INTO compliance_checklistitem VALUES (?)", [(1,), (2,)])
+        conn.commit()
+        conn.close()
+        patcher = mock.patch("compliance.backups.database_path", return_value=str(self.db))
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        backup_dir = override_settings(BACKUP_DIR=self.out)
+        backup_dir.enable()
+        self.addCleanup(backup_dir.disable)
+
+    def age(self, path, hours):
+        stamp = timezone.now().timestamp() - hours * 3600
+        os.utime(path, (stamp, stamp))
+
+    # --- backup health ---
+
+    def test_health_reports_missing_stale_failed_and_ok(self):
+        self.assertEqual(backups.health()["level"], "warn")
+        target = backups.create_backup()
+        self.assertEqual(backups.health()["level"], "ok")
+        self.age(target, 50)
+        self.assertIn("2 days old", backups.health()["text"])
+        backups.write_status(ok=False, message="disk full")
+        self.assertEqual(backups.health(), {"level": "bad", "text": "The last backup failed: disk full", "last_backup": mock.ANY})
+
+    def test_failed_backup_is_recorded(self):
+        self.db.write_bytes(b"this is not a database" * 100)
+        with self.assertRaises(Exception):
+            backups.create_backup()
+        self.assertEqual(backups.health()["level"], "bad")
+        self.assertEqual(list(self.out.glob(backups.PATTERN)), [])
+        response = self.client.get(reverse("compliance:dashboard"))
+        self.assertContains(response, "The last backup failed")
+
+    def test_restore_test_button(self):
+        backups.create_backup()
+        response = self.client.post(reverse("compliance:backup_test"), follow=True)
+        self.assertContains(response, "restores correctly. It contains 2 checklist items")
+        self.assertTrue(AuditEntry.objects.filter(model="Backup", action="tested").exists())
+
+    def test_restore_test_detects_damaged_file(self):
+        (self.out / "popia-20260101-000000.sqlite3.gz").write_bytes(b"damaged")
+        response = self.client.post(reverse("compliance:backup_test"), follow=True)
+        self.assertContains(response, "can&#x27;t be restored")
+        self.assertEqual([p.name for p in self.out.iterdir()], ["popia-20260101-000000.sqlite3.gz"])
+
+    def test_scheduler_backs_up_only_when_due(self):
+        call_command("scheduler", "--once", stdout=StringIO())
+        self.assertEqual(len(list(self.out.glob(backups.PATTERN))), 1)
+        call_command("scheduler", "--once", stdout=StringIO())
+        self.assertEqual(len(list(self.out.glob(backups.PATTERN))), 1)
+
+    # --- reminders ---
+
+    def overdue_request(self):
+        return DataSubjectRequest.objects.create(
+            request_type="access", requester_name="Thandi Nkosi", details="x", received_on=timezone.localdate() - timedelta(days=40)
+        )
+
+    def test_digest_uses_references_not_names(self):
+        req = self.overdue_request()
+        Incident.objects.create(title="Laptop of Pieter stolen", cause="device", description="x", notifiable="yes")
+        text = "\n".join(reminders.digest_items())
+        self.assertIn(f"{req.reference} (access to personal information / records) is overdue", text)
+        self.assertIn("breach not yet reported", text)
+        self.assertNotIn("Thandi", text)
+        self.assertNotIn("Pieter", text)
+
+    def test_digest_sent_once_a_day_and_logged(self):
+        backups.create_backup()
+        self.overdue_request()
+        self.assertTrue(reminders.send_digest().startswith("Sent"))
+        self.assertEqual(reminders.send_digest(), "Already sent today.")
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(message.to, ["io@example.test"])
+        self.assertIn("1 item needs your attention", message.subject)
+        self.assertIn("https://popia.example.test/", message.body)
+        self.assertTrue(AuditEntry.objects.filter(model=reminders.AUDIT_MODEL, action="sent").exists())
+
+    def test_no_email_when_nothing_needs_attention(self):
+        backups.create_backup()
+        ComplianceTask.objects.all().delete()
+        self.assertEqual(reminders.send_digest(), "Nothing needs attention.")
+        self.assertEqual(mail.outbox, [])
+
+    @override_settings(EMAIL_HOST="")
+    def test_reminders_off_without_mail_server(self):
+        self.overdue_request()
+        self.assertIn("off", reminders.send_digest())
+        self.assertContains(self.client.get(reverse("compliance:task_list")), "Off. To get a daily email")
+
+    def test_test_email_button(self):
+        response = self.client.post(reverse("compliance:reminder_test"), follow=True)
+        self.assertContains(response, "Test email sent to io@example.test")
+        self.assertEqual(mail.outbox[0].subject, "POPIA: test email")
+

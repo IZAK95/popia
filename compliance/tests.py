@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest import mock
 
 from django.contrib.auth import get_user_model
+from django.conf import settings as settings_module
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.core import mail
@@ -25,6 +26,7 @@ from .models import (
     Incident,
     Operator,
     ProcessingActivity,
+    RegulatorMatter,
     Risk,
     add_months,
 )
@@ -242,6 +244,73 @@ class AppTests(TestCase):
             self.assertTrue(files[0].name.startswith("popia-"))
             with gzip.open(files[0]) as packed:
                 self.assertEqual(packed.read(16), b"SQLite format 3\x00")
+
+
+@override_settings(**TEST_SETTINGS)
+class ActCoverageTests(TestCase):
+    """Features added so every obligation in the Act on a business can be met and evidenced in the app."""
+
+    def setUp(self):
+        seed_all()
+        user = get_user_model().objects.create_user("owner", password="a-long-test-password")
+        device = TOTPDevice.objects.create(user=user, name="phone", confirmed=True)
+        self.client.login(username="owner", password="a-long-test-password")
+        self.client.post(reverse("accounts:two_factor_verify"), {"token": token_for(device)})
+
+    def test_checklist_covers_added_sections(self):
+        codes = dict(ChecklistItem.objects.values_list("code", "legal_ref"))
+        self.assertIn("s14(6)", codes["RIGHTS-05"])
+        self.assertIn("s60", codes["GOV-08"])
+        self.assertIn("s103", codes["GOV-09"])
+        self.assertIn("s105", codes["SEC-11"])
+        self.assertIn("s70", codes["MKT-04"])
+
+    def test_coverage_map_references_real_checklist_items(self):
+        import re
+
+        text = (Path(settings_module.BASE_DIR) / "docs" / "POPIA-COVERAGE.md").read_text()
+        referenced = set(re.findall(r"\b(?:GOV|LAW|OPEN|SEC|RIGHTS|SPEC|MKT|PAIA)-\d\d\b", text))
+        existing = set(ChecklistItem.objects.values_list("code", flat=True))
+        self.assertTrue(referenced)
+        self.assertEqual(referenced - existing, set())
+        self.assertEqual(existing - referenced, set(), "every checklist item should appear in the coverage map")
+
+    def test_infringement_notice_gets_30_day_deadline(self):
+        received = timezone.localdate() - timedelta(days=5)
+        matter = RegulatorMatter.objects.create(kind="infringement_notice", received_on=received, summary="Fine")
+        self.assertEqual(matter.response_due, received + timedelta(days=30))
+        self.assertTrue(matter.reference.startswith("REG-"))
+        self.assertIsNone(matter.appeal_deadline)
+
+    def test_enforcement_notice_appeal_window_and_alerts(self):
+        today = timezone.localdate()
+        matter = RegulatorMatter.objects.create(
+            kind="enforcement_notice", received_on=today - timedelta(days=40), summary="Stop X", response_due=today - timedelta(days=1)
+        )
+        self.assertEqual(matter.appeal_deadline, today - timedelta(days=10))
+        self.assertTrue(matter.is_overdue)
+        self.assertContains(self.client.get(reverse("compliance:dashboard")), "the Regulator&#x27;s deadline passed")
+        page = self.client.get(reverse("compliance:regulator_detail", args=[matter.pk]))
+        self.assertContains(page, "criminal offence (s103(1))")
+        self.assertIn(f"{matter.reference} – Enforcement notice: the Regulator's deadline passed", "\n".join(reminders.digest_items()))
+
+    def test_appealed_matter_is_not_overdue(self):
+        today = timezone.localdate()
+        matter = RegulatorMatter.objects.create(
+            kind="information_notice", received_on=today - timedelta(days=20), summary="x", response_due=today - timedelta(days=1), status="appealed"
+        )
+        self.assertFalse(matter.is_overdue)
+
+    def test_restriction_and_consent_requests_show_their_steps(self):
+        restriction = DataSubjectRequest.objects.create(request_type="restriction", requester_name="A", details="x", received_on=timezone.localdate())
+        consent = DataSubjectRequest.objects.create(request_type="consent", requester_name="B", details="x", received_on=timezone.localdate())
+        self.assertContains(self.client.get(reverse("compliance:request_detail", args=[restriction.pk])), "Tell them before lifting it")
+        self.assertContains(self.client.get(reverse("compliance:request_detail", args=[consent.pk])), "Stop the processing that relied on consent")
+
+    def test_response_letters_cover_new_cases(self):
+        page = self.client.get(reverse("compliance:document", args=["request-response"]))
+        for heading in ("Fee estimate", "No personal information held", "Processing restricted", "Notice before lifting a restriction", "Withdrawal of consent confirmed"):
+            self.assertContains(page, heading)
 
 
 @override_settings(**TEST_SETTINGS, EMAIL_HOST="smtp.example.test", REMINDER_EMAIL=["io@example.test"], APP_URL="https://popia.example.test")

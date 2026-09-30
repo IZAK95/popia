@@ -13,11 +13,12 @@ from django.urls import reverse
 from django.utils import timezone
 
 from . import backups
-from .models import AuditEntry, CompanyProfile, ComplianceTask, DataSubjectRequest, Incident
+from .models import AuditEntry, CompanyProfile, ComplianceTask, DataSubjectRequest, Incident, RegulatorMatter
 
 AUDIT_MODEL = "Reminder email"
 DUE_SOON_DAYS = 7
 PAIA_WARN_DAYS = 14
+REGULATOR_WARN_DAYS = 14
 
 
 def enabled():
@@ -56,6 +57,14 @@ def digest_items(today=None):
             days = (req.due_date - today).days
             when = "today" if days == 0 else f"in {days} day{'s' if days != 1 else ''}"
             soon.append(f"{req.reference} ({kind}) is due {when} ({_date(req.due_date)}).")
+
+    for matter in RegulatorMatter.objects.filter(status="open"):
+        if matter.is_overdue:
+            urgent.append(f"{matter}: the Regulator's deadline passed on {_date(matter.response_due)}.")
+        elif matter.response_due and matter.response_due <= today + timedelta(days=REGULATOR_WARN_DAYS):
+            soon.append(f"{matter}: respond to the Regulator by {_date(matter.response_due)}.")
+        elif matter.appeal_deadline and today <= matter.appeal_deadline <= today + timedelta(days=DUE_SOON_DAYS):
+            soon.append(f"{matter}: the window to appeal to the High Court closes on {_date(matter.appeal_deadline)} (s97).")
 
     for task in ComplianceTask.objects.filter(done_on__isnull=True, due_date__lt=today):
         soon.append(f"Overdue task: {task.title} (was due {_date(task.due_date)}).")

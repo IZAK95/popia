@@ -1,5 +1,5 @@
 {% load compliance_tags %}
-{% include "compliance/documents/_header.html" with title="Request Response Letters" ref="POPIA s11(3), s23–s25; PAIA s56–s57" %}
+{% include "compliance/documents/_header.html" with title="Request Response Letters" ref="POPIA s11(2)–(3), s14(6)–(8), s23–s25; PAIA s56–s57" %}
 <p>Copy the letter you need into an email or on letterhead. Replace the highlighted parts. Keep a copy with the request in the request register.</p>
 
 <h2>A. Acknowledgement of receipt</h2>
@@ -23,8 +23,29 @@
 <h2>E. Request refused (in whole or in part)</h2>
 <p>Dear <mark class="ph">[Name]</mark></p>
 <p>We have considered your request <mark class="ph">[reference]</mark>. Unfortunately we are unable to <mark class="ph">[grant access to / correct / delete]</mark> <mark class="ph">[the information / part of the information]</mark> because <mark class="ph">[reason, with the section of PAIA or POPIA relied on, e.g. PAIA s63 – it would disclose personal information of another person; or: the law requires us to keep this record until (date)]</mark>.</p>
+<p><mark class="ph">[For a correction request we don't agree with: The information is correct because (evidence). At your request, we have attached a note to the record that you asked for this correction and it was not made. (POPIA s24(2)(c)–(d))]</mark></p>
 <p>If you are not satisfied, you may lodge a complaint with the Information Regulator ({{ regulator.popia_complaints }} / {{ regulator.paia_complaints }}, {{ regulator.portal }}) or apply to court within 180 days.</p>
 
 <h2>F. Objection or marketing opt-out confirmed</h2>
 <p>Dear <mark class="ph">[Name]</mark></p>
 <p>We confirm that we have received your objection (<mark class="ph">[reference]</mark>) and have stopped processing your personal information for <mark class="ph">[purpose, e.g. direct marketing]</mark> with effect from <mark class="ph">[date]</mark>. You will not receive further <mark class="ph">[marketing communications]</mark> from us.</p>
+
+<h2>G. Fee estimate (access requests)</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>Thank you for your request <mark class="ph">[reference]</mark>. Confirming whether we hold personal information about you is free. To provide copies of the records, the prescribed access fee is estimated at <mark class="ph">[R amount]</mark>, made up of <mark class="ph">[reproduction / search and preparation time]</mark>. <mark class="ph">[Before we start, please pay a deposit of R amount.]</mark> We will provide the records once the fee is paid. (POPIA s23(3))</p>
+
+<h2>H. No personal information held</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>Following your request <mark class="ph">[reference]</mark>, we have searched our records, including email, electronic files and paper files, and confirm that we do not hold personal information about you. There is no charge for this confirmation. (POPIA s23(1)(a))</p>
+
+<h2>I. Processing restricted</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>Following your request <mark class="ph">[reference]</mark>, we have restricted the processing of <mark class="ph">[describe the information]</mark> with effect from <mark class="ph">[date]</mark>, because <mark class="ph">[you have contested its accuracy and we are checking it / we only need to keep it as proof / you asked us to restrict it instead of deleting it / you asked us to transfer it to another system]</mark>. While it is restricted we will only store it, or use it as proof, with your consent, to protect someone's rights, or in the public interest. We will tell you before we lift the restriction. (POPIA s14(6)–(8))</p>
+
+<h2>J. Notice before lifting a restriction</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>We restricted the processing of <mark class="ph">[describe the information]</mark> on <mark class="ph">[date]</mark> (<mark class="ph">[reference]</mark>). <mark class="ph">[We have finished checking its accuracy and found that (outcome) / The reason for the restriction no longer applies because (reason)]</mark>. We will therefore lift the restriction on <mark class="ph">[date]</mark> and resume using the information for <mark class="ph">[purpose]</mark>. If you object, please contact our Information Officer, {{ c.io_name|ph:"Information Officer name" }}, at {{ c.io_email|ph:"IO email" }} before then. (POPIA s14(8))</p>
+
+<h2>K. Withdrawal of consent confirmed</h2>
+<p>Dear <mark class="ph">[Name]</mark></p>
+<p>We confirm that you withdrew your consent to <mark class="ph">[describe, e.g. processing of your fingerprint for time and attendance]</mark> on <mark class="ph">[date]</mark> (<mark class="ph">[reference]</mark>). We have stopped that processing <mark class="ph">[and deleted the information / and offered you the following alternative: ...]</mark>. Processing before your withdrawal remains lawful, and information we need for other lawful reasons, such as your contract or a legal obligation, is not affected. (POPIA s11(2)(b))</p>

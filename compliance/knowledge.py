@@ -64,7 +64,8 @@ CHECKLIST = [
         "GOV-05", "governance", True,
         "Do a personal information impact assessment",
         "The IO must ensure a personal information impact assessment is done – in plain terms: identify what could go "
-        "wrong with the personal information you hold and decide what to do about it.",
+        "wrong with the personal information you hold and decide what to do about it. If the Regulator ever fines you, it "
+        "must weigh whether you failed to do a risk assessment or keep good policies (s109(3)(g)).",
         "1. Complete the Processing register first.\n2. Review the example risks in the Risk register, adjust scores, "
         "add your own and record controls.\n3. Repeat yearly or whenever you introduce a new system.",
         "Regulation 4(1)(b); POPIA s19(2)", "compliance:risk_list", "Open risk register",
@@ -84,6 +85,28 @@ CHECKLIST = [
         "POPIA compliance is ongoing. The 2025 amendments require the framework to be continuously improved.",
         "Keep the recurring tasks in Tasks & deadlines. Once a year re-walk this checklist and update evidence.",
         "Regulation 4(1)(a)", "compliance:task_list", "Open tasks",
+    ),
+    (
+        "GOV-08", "governance", True,
+        "Check whether a code of conduct applies to your sector",
+        "The Regulator can issue codes of conduct for a sector (for example banking or credit reporting). If a code "
+        "applies to you, breaking it counts as breaking POPIA itself (s68), and it replaces prior authorisation for that "
+        "sector (s57(3)).",
+        "1. Look at the register of approved codes of conduct on the Information Regulator's website (s66).\n"
+        "2. If one covers your industry, or an industry body you belong to, record which one and follow it.\n"
+        "3. If none applies, mark this Done with a note of the date you checked, and check again at the annual review.",
+        "POPIA s60–s68", "", "",
+    ),
+    (
+        "GOV-09", "governance", True,
+        "Be ready to deal with the Information Regulator",
+        "The Information Officer must work with the Regulator on any complaint, assessment or investigation (s55(1)(c)). "
+        "Ignoring an enforcement notice is a criminal offence (s103), you have only 30 days to appeal a notice (s97), "
+        "and a fine must be dealt with within 30 days (s109).",
+        "1. Make sure the Regulator's letters reach the Information Officer (the address and email registered on the "
+        "eServices portal).\n2. Log anything you receive in Regulator correspondence the same day; the app tracks "
+        "the deadlines and the appeal window.\n3. Keep this app's evidence up to date: it's what you'll show the Regulator.",
+        "POPIA s55(1)(c), s89–s97, s103, s109", "compliance:regulator_list", "Open Regulator correspondence",
     ),
     # ---------------- Lawful processing ----------------
     (
@@ -132,7 +155,11 @@ CHECKLIST = [
         "Records may not be kept longer than necessary, unless a law requires it. After that they must be destroyed or "
         "de-identified so they cannot be reconstructed.",
         "1. Review the Retention schedule (it lists South African legal minimums).\n"
-        "2. Set a retention period for each activity.\n3. Do the quarterly clean-up task.",
+        "2. Set a retention period for each activity.\n"
+        "3. If you used a record to make a decision about someone (e.g. a job application or a disciplinary), keep it "
+        "long enough for them to ask for it (s14(3)).\n"
+        "4. Records kept longer for historical, statistical or research use need safeguards against other use (s14(2)).\n"
+        "5. Do the quarterly clean-up task. Shred paper and securely wipe files, so they can't be reconstructed (s14(5)).",
         "POPIA s14", "compliance:retention_list", "Open retention schedule",
     ),
     (
@@ -147,7 +174,9 @@ CHECKLIST = [
         "LAW-08", "lawful", False,
         "Keep proof of consent where you rely on it",
         "If consent is your lawful ground you must be able to prove it, and people may withdraw it at any time.",
-        "Keep signed/recorded consents (e.g. biometric clock-in, health information). Record withdrawals.",
+        "Keep signed/recorded consents (e.g. biometric clock-in, health information). When someone withdraws consent, "
+        "log it in Requests (type 'Withdrawal of consent') and stop that processing. What you did before the withdrawal "
+        "stays lawful (s11(2)(b)).",
         "POPIA s11(2)", "", "",
     ),
     # ---------------- Openness & quality ----------------
@@ -263,13 +292,29 @@ CHECKLIST = [
         "Create your eServices profile now (same as GOV-02) so you're not doing it for the first time during a crisis.",
         "POPIA s22; Regulator notice 2025", "", "",
     ),
+    (
+        "SEC-11", "security", True,
+        "Protect bank account and card numbers",
+        "Mishandling someone's bank account, card or credit account number is a separate criminal offence if it is "
+        "serious or persistent and likely to cause substantial damage or distress (s105), punishable by a fine or up to "
+        "10 years' imprisonment. Taking all reasonable steps to comply is a defence. Payroll and supplier banking "
+        "details are the usual risk.",
+        "1. Limit who can see or change banking details (payroll, accounts payable).\n"
+        "2. Confirm any change of bank details by phoning a known number, never only by email: this stops invoice and "
+        "payroll fraud.\n3. Never store full card numbers; let your payment provider hold them.\n"
+        "4. Record these controls in the Risk register.",
+        "POPIA s105, s106", "compliance:risk_list", "Open risk register",
+    ),
     # ---------------- Rights ----------------
     (
         "RIGHTS-01", "rights", True,
         "Be ready to answer access requests within 30 days",
         "People may ask whether you hold their information and for a copy of it. Under PAIA a private body must decide "
         "within 30 days (extendable once by 30 days with notice).",
-        "Log every request in Requests; the app calculates the deadline and warns you before it expires.",
+        "Log every request in Requests; the app calculates the deadline and warns you before it expires. Confirming "
+        "whether you hold someone's information is free (s23(1)(a)). If you charge a fee for a copy, give a written "
+        "estimate first; you may ask for a deposit (s23(3)). If part must be refused, disclose the rest (s23(5)), and "
+        "tell the person they may ask for corrections (s23(2)). The response letters cover each case.",
         "POPIA s23; PAIA s50, s56, s57", "compliance:request_list", "Open requests",
     ),
     (
@@ -277,7 +322,10 @@ CHECKLIST = [
         "Handle correction and deletion requests",
         "People may ask you to correct or delete information that is inaccurate, excessive, out of date or unlawfully "
         "obtained (Form 2 or similar).",
-        "Log it, check it, correct/delete or give reasons for refusing, and notify the requester.",
+        "Log it and check it. Then correct or delete it, or give the person credible evidence that it's right. If you "
+        "can't agree and they ask, attach a note to the record that a correction was requested but not made "
+        "(s24(2)). Tell anyone you shared it with if it affects decisions about the person (s24(3)), and tell the "
+        "requester what you did (s24(4)).",
         "POPIA s24; Regulation 3", "compliance:request_list", "Open requests",
     ),
     (
@@ -295,6 +343,19 @@ CHECKLIST = [
         "Ask for adequate proof of identity (e.g. call back on the number you have on file) before releasing information.",
         "POPIA s23(1)", "", "",
     ),
+    (
+        "RIGHTS-05", "rights", True,
+        "Restrict processing when the law requires it",
+        "Sometimes you must keep information but stop using it (restriction): while you check information the person "
+        "says is wrong; when you only still need it as proof; when processing was unlawful but the person asks you to "
+        "restrict it instead of deleting it; or when the person asks to move it to another system (s14(6)). While "
+        "restricted you may only store it, or use it as proof, with consent, to protect someone's rights or in the "
+        "public interest (s14(7)).",
+        "1. Log the request in Requests (type 'Restriction of processing').\n"
+        "2. Mark the record as restricted where it's kept (e.g. a note on the file or a restricted folder) so staff don't use it.\n"
+        "3. Before lifting the restriction, tell the person in writing (s14(8)). The response letters include both notices.",
+        "POPIA s14(6)–(8)", "compliance:request_list", "Open requests",
+    ),
     # ---------------- Special ----------------
     (
         "SPEC-01", "special", True,
@@ -302,7 +363,9 @@ CHECKLIST = [
         "Health, biometrics, race/ethnicity, religion, trade union membership, political views, sex life and criminal "
         "behaviour are prohibited from processing unless an exception in POPIA applies.",
         "Tick 'special personal information' on each relevant activity in the Processing register and document the "
-        "authorisation you rely on.",
+        "authorisation you rely on. Religious bodies, trade unions and political parties have their own exceptions for "
+        "their members, but may not pass that information to others without consent (s28, s30, s31). Information about "
+        "inherited characteristics (genetic information) needs a serious medical interest or research purpose (s32(5)).",
         "POPIA s26, s27", "compliance:activity_list", "Open processing register",
     ),
     (
@@ -370,7 +433,10 @@ CHECKLIST = [
         "Email/SMS/WhatsApp/phone marketing needs opt-in consent (form substantially similar to Form 4, free of charge – "
         "an opt-out is not consent), unless the person is an existing customer who bought similar products and was given "
         "a chance to opt out. Every message must include an opt-out.",
-        "If you don't do marketing, mark Not applicable. Otherwise keep consent records and include an unsubscribe option.",
+        "If you don't do marketing, mark Not applicable. Otherwise:\n"
+        "1. Ask someone for marketing consent only once; if they decline, don't ask again (s69(2)).\n"
+        "2. Keep consent records.\n"
+        "3. Every message must say who it's from and give an address or link to opt out, free of charge (s69(3)(c), s69(4)).",
         "POPIA s69; Regulation 6 (amended 2025); Guidance Note on Direct Marketing", "", "",
     ),
     (
@@ -384,8 +450,20 @@ CHECKLIST = [
         "MKT-03", "marketing", False,
         "No decisions based solely on automated processing",
         "People may not be subject to decisions with legal effect based solely on automated profiling, unless safeguards apply.",
-        "Most small businesses don't do this – mark Not applicable if so.",
+        "Most small businesses don't do this – mark Not applicable if so. If you do (e.g. automatic credit scoring or "
+        "CV screening), either have a person make the final decision, so it isn't based solely on automated processing, "
+        "or rely on an exception such as a contract. The exception needs safeguards: the person can make "
+        "representations and is told enough about the logic behind the decision to do so (s71(2)–(3)).",
         "POPIA s71", "", "",
+    ),
+    (
+        "MKT-04", "marketing", False,
+        "Tell people before listing them in a directory",
+        "If you publish a directory of people (e.g. a member or subscriber directory), they must be told free of charge "
+        "what it's for and how it can be searched before they're listed, and be able to object or ask for changes (s70).",
+        "Most businesses don't publish directories – mark Not applicable if so. Otherwise tell people before listing "
+        "them and give an easy way to opt out.",
+        "POPIA s70", "", "",
     ),
     # ---------------- PAIA ----------------
     (

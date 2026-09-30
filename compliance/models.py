@@ -327,6 +327,8 @@ class DataSubjectRequest(TimeStamped):
         ("correction", "Correction of information (s24 – Form 2)"),
         ("deletion", "Deletion / destruction of information (s24 – Form 2)"),
         ("objection", "Objection to processing (s11(3) – Form 1)"),
+        ("restriction", "Restriction of processing (s14(6))"),
+        ("consent", "Withdrawal of consent (s11(2)(b))"),
         ("marketing", "Stop direct marketing (s69)"),
         ("complaint", "Privacy complaint"),
         ("other", "Other"),
@@ -577,6 +579,80 @@ def add_months(value, months):
     month = month_index % 12 + 1
     day = min(value.day, [31, 29 if year % 4 == 0 and (year % 100 or year % 400 == 0) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1])
     return value.replace(year=year, month=month, day=day)
+
+
+class RegulatorMatter(TimeStamped):
+    """Correspondence from the Information Regulator: complaints, assessments, notices and fines (Chapter 10)."""
+
+    KINDS = [
+        ("complaint", "Complaint about us referred by the Regulator (s74–s77)"),
+        ("assessment", "Assessment of our processing (s89)"),
+        ("information_notice", "Information notice (s90)"),
+        ("enforcement_notice", "Enforcement notice (s95)"),
+        ("infringement_notice", "Infringement notice – administrative fine (s109)"),
+        ("prior_authorisation", "Prior authorisation notification (s57–s58)"),
+        ("other", "Other correspondence"),
+    ]
+    # Notices that can be appealed to the High Court within 30 days of receipt (s97(1)).
+    APPEALABLE = ("information_notice", "enforcement_notice")
+    STATUSES = [
+        ("open", "Open – action needed"),
+        ("responded", "Responded / complied"),
+        ("appealed", "Appealed to the High Court"),
+        ("closed", "Closed"),
+    ]
+    OPEN_STATUSES = ("open", "appealed")
+
+    reference = models.CharField(max_length=20, unique=True, editable=False)
+    kind = models.CharField("Type", max_length=24, choices=KINDS)
+    received_on = models.DateField("Received on", default=timezone.localdate)
+    regulator_reference = models.CharField("Regulator's reference", max_length=80, blank=True)
+    summary = models.TextField("What is it about?", help_text="What the Regulator asks for or alleges, in your own words.")
+    response_due = models.DateField(
+        "Response or compliance deadline",
+        null=True,
+        blank=True,
+        help_text="The date in the notice. For an infringement notice, leave blank: it's 30 days after you received it (s109).",
+    )
+    status = models.CharField(max_length=12, choices=STATUSES, default="open")
+    responded_on = models.DateField("Responded / complied on", null=True, blank=True)
+    actions_taken = models.TextField("What we did", blank=True, help_text="Steps taken, information supplied, fine paid, appeal lodged.")
+    documents_location = models.CharField(
+        "Where the notice and our response are filed", max_length=255, blank=True, help_text="E.g. a folder path or document system link."
+    )
+
+    class Meta:
+        ordering = ["-received_on", "-id"]
+        verbose_name = "Regulator matter"
+
+    def __str__(self):
+        return f"{self.reference} – {self.get_kind_display().split(' (')[0]}"
+
+    def get_absolute_url(self):
+        return reverse("compliance:regulator_detail", args=[self.pk])
+
+    def save(self, *args, **kwargs):
+        if not self.reference:
+            self.reference = next_reference(RegulatorMatter, "REG")
+        if not self.response_due and self.kind == "infringement_notice":
+            self.response_due = self.received_on + timedelta(days=30)
+        super().save(*args, **kwargs)
+
+    @property
+    def is_open(self):
+        return self.status in self.OPEN_STATUSES
+
+    @property
+    def appeal_deadline(self):
+        return self.received_on + timedelta(days=30) if self.kind in self.APPEALABLE else None
+
+    @property
+    def days_left(self):
+        return (self.response_due - timezone.localdate()).days if self.response_due else None
+
+    @property
+    def is_overdue(self):
+        return self.status == "open" and self.response_due is not None and self.response_due < timezone.localdate()
 
 
 class AuditEntry(models.Model):

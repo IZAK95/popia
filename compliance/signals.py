@@ -15,6 +15,7 @@ AUDITED = (
     models.Risk,
     models.TrainingRecord,
     models.ComplianceTask,
+    models.RegulatorMatter,
 )
 
 

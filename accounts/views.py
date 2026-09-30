@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 from django_otp import login as otp_login
 from django_otp import match_token
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -36,6 +37,14 @@ def _qr_data_uri(text):
     return "data:image/svg+xml;base64," + base64.b64encode(buffer.getvalue()).decode()
 
 
+def _next_url(request):
+    """The page to continue to after the code check. Only local URLs, so the link can't send people elsewhere."""
+    target = request.GET.get("next", "")
+    if url_has_allowed_host_and_scheme(target, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+        return target
+    return "compliance:dashboard"
+
+
 @login_required
 def two_factor_setup(request):
     """First login: enrol an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, ...)."""
@@ -50,7 +59,7 @@ def two_factor_setup(request):
             device.save()
             otp_login(request, device)
             messages.success(request, "Two-factor authentication is set up. Keep your phone safe.")
-            return redirect("compliance:dashboard")
+            return redirect(_next_url(request))
         form.add_error("token", "That code didn't match. Check the time on your phone and try the newest code.")
 
     secret = base64.b32encode(device.bin_key).decode().rstrip("=")
@@ -64,12 +73,12 @@ def two_factor_setup(request):
 @login_required
 def two_factor_verify(request):
     if request.user.is_verified():
-        return redirect("compliance:dashboard")
+        return redirect(_next_url(request))
     form = TokenForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         device = match_token(request.user, form.cleaned_data["token"])
         if device is not None:
             otp_login(request, device)
-            return redirect(request.GET.get("next") or "compliance:dashboard")
+            return redirect(_next_url(request))
         form.add_error("token", "Invalid or expired code.")
     return render(request, "accounts/two_factor_verify.html", {"form": form})

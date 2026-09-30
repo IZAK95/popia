@@ -98,7 +98,7 @@ class RegisterList(RegisterMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["rows"] = [(obj, [col.cell(obj) for col in self.register.columns]) for obj in ctx["object_list"]]
+        ctx["rows"] = [(obj, [(col.cell(obj), col) for col in self.register.columns]) for obj in ctx["object_list"]]
         ctx["drafts"] = sum(1 for obj in ctx["object_list"] if getattr(obj, "is_draft", False))
         if self.register.list_context:
             ctx.update(self.register.list_context(ctx["object_list"]))

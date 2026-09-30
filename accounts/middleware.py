@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from django.shortcuts import redirect
 from django.urls import reverse
 
@@ -16,7 +18,10 @@ class RequireTwoFactorMiddleware:
         if user is not None and user.is_authenticated and not user.is_verified():
             allowed = {reverse(name) for name in ALLOWED_URL_NAMES}
             if request.path not in allowed and not request.path.startswith("/static/"):
-                if user.totpdevice_set.filter(confirmed=True).exists():
-                    return redirect("accounts:two_factor_verify")
-                return redirect("accounts:two_factor_setup")
+                name = "accounts:two_factor_verify" if user.totpdevice_set.filter(confirmed=True).exists() else "accounts:two_factor_setup"
+                url = reverse(name)
+                # Remember the page the user was heading to, so they land there after the code check.
+                if request.method == "GET" and request.path != "/":
+                    url += "?" + urlencode({"next": request.get_full_path()})
+                return redirect(url)
         return self.get_response(request)

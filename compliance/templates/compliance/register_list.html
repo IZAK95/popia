@@ -8,14 +8,14 @@
 </div>
 {% if drafts %}<div class="callout warn">{{ drafts }} entr{{ drafts|pluralize:"y is,ies are" }} still <strong>drafts</strong> (examples added by the app). Open each one, correct it for your business and set Review status to <em>Confirmed</em> – or delete it if it doesn't apply.</div>{% endif %}
 {% block before_table %}{% endblock %}
-<div class="table-wrap">
+<div class="table-wrap stack">
   <table>
     <thead><tr>{% for col in register.columns %}<th>{{ col.label }}</th>{% endfor %}</tr></thead>
     <tbody>
       {% for obj, cells in rows %}
         <tr>
-          {% for cell in cells %}
-            <td>{% if forloop.first %}<a class="rowlink" href="{% url urls.detail obj.pk %}">{{ cell.text }}</a>{% elif cell.badge %}<span class="badge {{ cell.badge }}">{{ cell.text }}</span>{% else %}{{ cell.text|truncatechars:90 }}{% endif %}</td>
+          {% for cell, col in cells %}
+            <td data-label="{{ col.label }}">{% if forloop.first %}<a class="rowlink" href="{% url urls.detail obj.pk %}">{{ cell.text }}</a>{% elif cell.badge %}<span class="badge {{ cell.badge }}">{{ cell.text }}</span>{% else %}{{ cell.text|truncatechars:90 }}{% endif %}</td>
           {% endfor %}
         </tr>
       {% empty %}

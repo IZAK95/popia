@@ -103,6 +103,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": DATA_DIR / "popia.sqlite3",
         "OPTIONS": {
+            # Wait up to 20 s for a lock instead of failing with "database is locked" when a
+            # save overlaps with the backup container or another worker thread.
+            "timeout": 20,
             "transaction_mode": "IMMEDIATE",
             "init_command": "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA foreign_keys=ON;",
         },

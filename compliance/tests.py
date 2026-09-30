@@ -1,6 +1,15 @@
+import gzip
+import os
+import sqlite3
+import tempfile
 from datetime import date, timedelta
+from io import StringIO
+from pathlib import Path
+from unittest import mock
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -66,9 +75,24 @@ class AuthFlowTests(TestCase):
         TOTPDevice.objects.create(user=self.user, name="phone", confirmed=True)
         self.client.login(username="owner", password="a-long-test-password")
         response = self.client.get(reverse("compliance:checklist"))
-        self.assertRedirects(response, reverse("accounts:two_factor_verify"))
-        response = self.client.post(reverse("accounts:two_factor_verify"), {"token": "000000"})
+        verify = reverse("accounts:two_factor_verify") + "?next=%2Fchecklist%2F"
+        self.assertRedirects(response, verify)
+        response = self.client.post(verify, {"token": "000000"})
         self.assertContains(response, "Invalid or expired code")
+
+    def test_verify_returns_to_requested_page(self):
+        device = TOTPDevice.objects.create(user=self.user, name="phone", confirmed=True)
+        self.client.login(username="owner", password="a-long-test-password")
+        verify = self.client.get(reverse("compliance:checklist"))["Location"]
+        response = self.client.post(verify, {"token": token_for(device)})
+        self.assertRedirects(response, reverse("compliance:checklist"))
+
+    def test_verify_ignores_offsite_next(self):
+        device = TOTPDevice.objects.create(user=self.user, name="phone", confirmed=True)
+        self.client.login(username="owner", password="a-long-test-password")
+        url = reverse("accounts:two_factor_verify") + "?next=https://evil.example/"
+        response = self.client.post(url, {"token": token_for(device)})
+        self.assertRedirects(response, reverse("compliance:dashboard"))
 
     def test_security_headers(self):
         response = self.client.get(reverse("accounts:login"))
@@ -190,3 +214,29 @@ class AppTests(TestCase):
     def test_backup_download_rejects_path_traversal(self):
         response = self.client.get(reverse("compliance:backup_download", args=["..%2Fpopia.sqlite3"]))
         self.assertEqual(response.status_code, 404)
+
+    def test_multiple_choice_field_renders_as_group(self):
+        Operator.objects.create(name="Payroll bureau", service="Payroll")
+        response = self.client.get(reverse("compliance:activity_create"))
+        html = response.content.decode()
+        self.assertIn('<fieldset class="choice-group">', html)
+        # No label wrapped around the whole list of checkboxes (nested labels are invalid HTML).
+        self.assertNotIn('<label><div id="id_operators">', html)
+
+    def test_backup_leaves_only_complete_files(self):
+        # The test database is in memory and locked by this test's transaction, so back up a real file.
+        with tempfile.TemporaryDirectory() as data, tempfile.TemporaryDirectory() as out:
+            db, out = Path(data) / "popia.sqlite3", Path(out)
+            conn = sqlite3.connect(db)
+            conn.execute("CREATE TABLE t (x)")
+            conn.close()
+            stale = out / ".tmp-interrupted"  # left behind by a killed run
+            stale.mkdir()
+            os.utime(stale, (0, 0))
+            with mock.patch.dict(settings.DATABASES["default"], NAME=str(db)), self.settings(BACKUP_DIR=out):
+                call_command("backup_db", stdout=StringIO())
+            files = list(out.iterdir())
+            self.assertEqual(len(files), 1, files)
+            self.assertTrue(files[0].name.startswith("popia-"))
+            with gzip.open(files[0]) as packed:
+                self.assertEqual(packed.read(16), b"SQLite format 3\x00")

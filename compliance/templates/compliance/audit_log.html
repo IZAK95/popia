@@ -5,12 +5,12 @@
   <h1>Audit log</h1>
   <p class="lead">Every change made in this app is recorded here automatically and can't be edited – useful evidence of accountability if the Regulator ever asks what you did and when.</p>
 </div>
-<div class="table-wrap">
+<div class="table-wrap stack">
   <table>
     <thead><tr><th>When</th><th>User</th><th>Action</th><th>Type</th><th>Item</th></tr></thead>
     <tbody>
       {% for e in object_list %}
-        <tr><td>{{ e.at|date:"j M Y H:i" }}</td><td>{{ e.user }}</td><td><span class="badge {% if e.action == 'deleted' %}bad{% elif e.action == 'created' %}ok{% endif %}">{{ e.action }}</span></td><td>{{ e.model }}</td><td>{{ e.summary }}</td></tr>
+        <tr><td data-label="When">{{ e.at|date:"j M Y H:i" }}</td><td data-label="User">{{ e.user }}</td><td data-label="Action"><span class="badge {% if e.action == 'deleted' %}bad{% elif e.action == 'created' %}ok{% endif %}">{{ e.action }}</span></td><td data-label="Type">{{ e.model }}</td><td data-label="Item">{{ e.summary }}</td></tr>
       {% empty %}
         <tr><td colspan="5" class="empty">No changes recorded yet.</td></tr>
       {% endfor %}

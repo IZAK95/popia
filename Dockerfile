@@ -28,4 +28,12 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/healthz')" || exit 1
 
 ENTRYPOINT ["docker/entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8765", "--workers", "2", "--access-logfile", "-", "--no-control-socket"]
+# 2 processes x 4 threads: a slow download or backup no longer blocks other pages. Threads suit this
+# I/O-bound app and SQLite (WAL) handles concurrent readers. Workers are recycled now and then to cap
+# memory, and the heartbeat file lives in RAM so a slow disk can't make gunicorn kill a healthy worker.
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8765", \
+     "--workers", "2", "--threads", "4", "--worker-class", "gthread", \
+     "--timeout", "60", "--graceful-timeout", "20", \
+     "--max-requests", "1000", "--max-requests-jitter", "100", \
+     "--worker-tmp-dir", "/dev/shm", \
+     "--access-logfile", "-", "--no-control-socket"]

@@ -2,13 +2,15 @@
 {% block before_table %}
 <section class="card">
   <h2>Heat map</h2>
-  <p class="small muted">Number of open risks by likelihood (up) and impact (across). Deal with the red cells first.</p>
+  <p class="small muted">Number of open risks by how likely each is and how much harm it would do. Deal with the red cells first.</p>
   <div class="heatmap" id="heatmap">
+    <span class="axis-title likelihood">Likelihood</span>
     {% for row in heat %}
       <span class="axis">{{ row.likelihood }}</span>
       {% for cell in row.cells %}<span class="cell {{ cell.level }}">{{ cell.count|default:"" }}</span>{% endfor %}
     {% endfor %}
-    <span></span>{% for i in "12345" %}<span class="axis">{{ i }}</span>{% endfor %}
+    <span></span><span></span>{% for i in "12345" %}<span class="axis">{{ i }}</span>{% endfor %}
+    <span class="axis-title impact">Impact</span>
   </div>
 </section>
 {% endblock %}

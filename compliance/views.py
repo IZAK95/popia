@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
 from django.core import serializers
-from django.core.management import call_command
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -13,7 +12,7 @@ from django.utils import timezone
 from django.views import generic
 from django.views.decorators.http import require_POST
 
-from . import documents
+from . import backups, documents, reminders
 from .models import (
     AuditEntry,
     ChecklistItem,
@@ -129,6 +128,12 @@ def task_groups(tasks):
     return {
         "open_tasks": [t for t in tasks if not t.done_on],
         "done_tasks": sorted((t for t in tasks if t.done_on), key=lambda t: t.done_on, reverse=True)[:20],
+        "reminders": {
+            "enabled": reminders.enabled(),
+            "recipients": reminders.recipients(),
+            "hour": settings.REMINDER_HOUR,
+            "last": AuditEntry.objects.filter(model=reminders.AUDIT_MODEL, action="sent").first(),
+        },
     }
 
 
@@ -285,6 +290,9 @@ def dashboard(request):
             alerts.append(("warn", f"{req.reference} from {req.requester_name} is due in {req.days_left} day(s).", "compliance:request_detail", req.pk))
     for task in ComplianceTask.objects.filter(done_on__isnull=True, due_date__lt=today):
         alerts.append(("warn", f"Overdue task: {task.title} (due {task.due_date:%d %b %Y}).", "compliance:task_list", None))
+    backup_health = backups.health()
+    if backup_health["level"] != "ok":
+        alerts.append((backup_health["level"], backup_health["text"], "compliance:export", None))
     window = paia_window(today)
     if window["open"]:
         alerts.append(("info", f"The PAIA annual report window is open – submit by 30 June ({window['days_left']} days left).", "compliance:paia_report", None))
@@ -553,8 +561,12 @@ EXPORT_MODELS = [CompanyProfile, ChecklistItem, Operator, ProcessingActivity, Re
 
 
 def export(request):
-    backups = sorted(settings.BACKUP_DIR.glob("popia-*.sqlite3.gz"), reverse=True) if settings.BACKUP_DIR.exists() else []
-    return render(request, "compliance/export.html", {"backups": [(b.name, b.stat().st_size) for b in backups[:30]]})
+    files = backups.list_backups()
+    return render(
+        request,
+        "compliance/export.html",
+        {"backups": [(b.name, b.stat().st_size) for b in files[:30]], "health": backups.health()},
+    )
 
 
 def export_json(request):
@@ -570,9 +582,43 @@ def export_json(request):
 
 @require_POST
 def backup_now(request):
-    call_command("backup_db")
-    messages.success(request, "Backup created.")
+    try:
+        target = backups.create_backup()
+    except Exception as exc:
+        messages.error(request, f"The backup failed: {exc}. Check that the backup folder exists and has free space.")
+    else:
+        messages.success(request, f"Backup created and checked: {target.name}.")
     return redirect("compliance:export")
+
+
+@require_POST
+def backup_test(request):
+    newest = backups.newest_backup()
+    if newest is None:
+        messages.error(request, "There's no backup to test yet. Create one first.")
+        return redirect("compliance:export")
+    try:
+        counts = backups.try_restore(newest)
+    except backups.BackupError as exc:
+        messages.error(request, f"{newest.name} can't be restored: {exc}. Create a new backup and test it.")
+    else:
+        found = ", ".join(f"{n} {label}" for label, n in counts.items())
+        messages.success(request, f"{newest.name} restores correctly. It contains {found}.")
+        AuditEntry.objects.create(user=request.user.get_username(), action="tested", model="Backup", summary=f"Restore test passed: {newest.name}")
+    return redirect("compliance:export")
+
+
+@require_POST
+def reminder_test(request):
+    try:
+        to = reminders.send_test(request.user.get_username())
+    except ValueError as exc:
+        messages.error(request, str(exc))
+    except Exception as exc:
+        messages.error(request, f"The test email couldn't be sent: {exc}. Check the EMAIL_ settings in .env.")
+    else:
+        messages.success(request, f"Test email sent to {', '.join(to)}. Check that it arrived, including the spam folder.")
+    return redirect("compliance:task_list")
 
 
 def backup_download(request, name):

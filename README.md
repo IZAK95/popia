@@ -5,14 +5,15 @@ Protection of Personal Information Act in plain language and gives you the tools
 
 | Area | What the app gives you |
 | --- | --- |
-| **Compliance checklist** | 47 requirements from POPIA, the POPIA Regulations (as amended April 2025), the 2026 Health Information Regulations and PAIA. Each item says why it matters, how to do it and which section applies, and stores your evidence. |
+| **Compliance checklist** | 52 requirements from POPIA, the POPIA Regulations (as amended April 2025), the 2026 Health Information Regulations and PAIA. Each item says why it matters, how to do it and which section applies, and stores your evidence. |
 | **Dashboard** | Progress score, next steps, overdue requests, breaches that still need reporting, and the PAIA report window. |
 | **Processing register** (s17) | What personal information you process, why, the lawful ground, special information, recipients, retention and security. Comes with draft entries for payroll/HR, recruitment and customers & suppliers. |
 | **Operators register** (s20–21, s72) | Service providers, their written agreements and the legal basis for storing data outside South Africa. |
 | **Retention schedule** (s14) | South African legal minimum periods (BCEA, Tax Administration Act, Companies Act, UIF, COIDA and others) plus sensible policy defaults. |
 | **Risk register** | Your personal information impact assessment (reg. 4(1)(b)) with a heat map. |
-| **Requests** (s23–25, s11(3), PAIA) | Log access, correction, deletion and objection requests. 30-day deadlines are calculated for you and step-by-step guidance is included. |
+| **Requests** (s23–25, s11, s14(6), PAIA) | Log access, correction, deletion, objection, restriction and consent-withdrawal requests. 30-day deadlines are calculated for you and step-by-step guidance is included. |
 | **Incidents** (s22) | A guided breach workflow: contain, assess, report to the Regulator's eServices portal, notify affected people, learn. |
+| **Regulator correspondence** (s89–s109) | Log complaints, assessments, information and enforcement notices and fines from the Information Regulator. Deadlines and the 30-day appeal window are tracked, with step-by-step guidance. |
 | **PAIA annual report** (s83(4)) | Works out the figures you need to submit between 1 April and 30 June. |
 | **Documents** | POPIA policy, privacy notice, employee notice and consents, **PAIA manual**, Information Officer appointment, breach plan and letter, operator agreement, retention schedule, record of processing, and request response letters. Filled in from your data. Print to PDF or download for Word. |
 | **Learn** | Ten short lessons: POPIA in plain language. They also work as a staff training script. |
@@ -20,7 +21,8 @@ Protection of Personal Information Act in plain language and gives you the tools
 
 > This app gives practical guidance based on research done in September 2026. It is not legal advice. Have an
 > attorney review your final PAIA manual and notices if you can, and re-check the Information Regulator's
-> website every year. See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the research behind the app.
+> website every year. See [`docs/RESEARCH.md`](docs/RESEARCH.md) for the research behind the app, and
+> [`docs/POPIA-COVERAGE.md`](docs/POPIA-COVERAGE.md) for how each section of the Act is covered.
 
 ## Security
 

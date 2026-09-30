@@ -1,0 +1,36 @@
+{% extends "compliance/register_detail.html" %}
+{% block extra %}
+{% if object.is_overdue %}
+<div class="callout bad"><strong>The deadline has passed.</strong> The Regulator's deadline was {{ object.response_due|date:"j F Y" }}. Contact the Regulator today{% if object.kind == "enforcement_notice" %}: not complying with an enforcement notice is a criminal offence (s103(1)){% endif %}.</div>
+{% elif object.is_open and object.response_due %}
+<div class="callout {% if object.days_left <= 7 %}warn{% endif %}"><span class="badge {% if object.days_left <= 7 %}warn{% else %}info{% endif %}">{{ object.days_left }} day{{ object.days_left|pluralize }} left</span> Deadline {{ object.response_due|date:"j F Y" }}.{% if object.appeal_deadline %} The 30-day window to appeal to the High Court closes on {{ object.appeal_deadline|date:"j F Y" }} (s97).{% endif %}</div>
+{% endif %}
+<section class="card">
+  <h2>What to do</h2>
+  <ol class="timeline">
+    <li class="{% if object.summary %}done{% else %}now{% endif %}"><strong>Record it and tell the Information Officer</strong>Log the notice the day it arrives, with the Regulator's reference and deadline, and file the original. Dealing with the Regulator is one of the Information Officer's duties (s55(1)(c)).</li>
+    {% if object.kind == "complaint" %}
+      <li><strong>Find the facts</strong>Pull up the related request, incident or processing activity and the audit log. The Regulator may try to settle the complaint (s80) or investigate it (s81), and can require documents and evidence.</li>
+      <li><strong>Respond fully and on time</strong>Explain what happened, what you did and what you've changed. Where you were wrong, fix it for the person now.</li>
+    {% elif object.kind == "assessment" %}
+      <li><strong>Co-operate with the assessment</strong>The Regulator checks whether your processing complies with the Act (s89). Supply what it asks for; your checklist evidence, registers and audit log show how you comply.</li>
+      <li><strong>Act on the recommendations</strong>The Regulator reports its findings and may require you to say, by a set date, what you've done about its recommendations or why not (s91). Record those steps below.</li>
+    {% elif object.kind == "information_notice" %}
+      <li><strong>Decide within 30 days whether to appeal</strong>You may appeal to the High Court within 30 days of receiving the notice (s97(1)). Unless the notice is marked urgent, you don't have to supply the information while an appeal is pending (s90(3)).</li>
+      <li><strong>Supply the information in the form asked for</strong>Give a truthful, complete report by the deadline. Knowingly or recklessly giving false information is an offence (s103(2)). You don't have to hand over legal advice from your attorney (s90(6)).</li>
+    {% elif object.kind == "enforcement_notice" %}
+      <li><strong>Get legal advice and decide within 30 days whether to appeal</strong>You may appeal to the High Court within 30 days of receiving the notice (s97(1)). Unless the notice is marked urgent, you don't have to comply while an appeal is pending (s95(3)).</li>
+      <li><strong>Take the steps it requires, by the deadline</strong>Do exactly what it says: take the specified steps or stop the specified processing. Not complying is a criminal offence, punishable by a fine or up to 10 years' imprisonment (s103(1), s107). Keep proof of each step.</li>
+      <li><strong>If circumstances change later</strong>After the appeal period you may ask the Regulator in writing to cancel or vary the notice (s96).</li>
+    {% elif object.kind == "infringement_notice" %}
+      <li><strong>Choose what to do within 30 days</strong>Within 30 days of receiving it you must pay the fine, arrange with the Regulator to pay in instalments, or choose to be tried in court (s109(2)(d)). If you do nothing, the Regulator can file the fine at court, where it counts as a civil judgment against you (s109(5)). Get legal advice before deciding.</li>
+    {% elif object.kind == "prior_authorisation" %}
+      <li><strong>Don't start the processing yet</strong>Once notified, you may not start until the Regulator finishes its investigation or tells you it won't investigate further (s58(2)).</li>
+      <li><strong>Watch the time limits</strong>The Regulator must tell you within 4 weeks whether it will investigate further, and a further investigation may take up to 13 weeks. If it doesn't decide within those limits, you may go ahead (s58(3)–(7)).</li>
+    {% else %}
+      <li><strong>Respond as asked</strong>Answer by the date given and keep a copy of what you sent.</li>
+    {% endif %}
+    <li class="{% if not object.is_open %}done{% elif object.status == 'open' %}now{% endif %}"><strong>Record your response and close</strong>Add the date and what you did, and set the status. This record is your evidence that you co-operated with the Regulator.</li>
+  </ol>
+</section>
+{% endblock %}

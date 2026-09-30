@@ -100,8 +100,8 @@ DOCUMENTS = [
         "file": "Request-Response-Letters",
         "title": "Request acknowledgement & response letters",
         "audience": "People making requests",
-        "legal_ref": "POPIA s23–s25, s11(3); PAIA s56–s57",
-        "description": "Templates to acknowledge, extend, grant or refuse requests from people about their information.",
+        "legal_ref": "POPIA s11(2)–(3), s14(6)–(8), s23–s25; PAIA s56–s57",
+        "description": "Templates to acknowledge, extend, grant or refuse requests, estimate fees, confirm no information is held, restrict processing and confirm consent withdrawals.",
         "action": "Copy the relevant letter when responding to a request.",
     },
 ]

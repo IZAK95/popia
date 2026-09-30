@@ -13,6 +13,7 @@ for model in (
     models.Risk,
     models.TrainingRecord,
     models.ComplianceTask,
+    models.RegulatorMatter,
 ):
     admin.site.register(model)
 

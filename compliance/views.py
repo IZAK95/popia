@@ -22,6 +22,7 @@ from .models import (
     Incident,
     Operator,
     ProcessingActivity,
+    RegulatorMatter,
     RetentionRule,
     Risk,
     TrainingRecord,
@@ -215,6 +216,32 @@ INCIDENTS = Register(
     detail_template="compliance/incident_detail.html",
 )
 
+REGULATOR = Register(
+    slug="regulator",
+    prefix="regulator/",
+    model=RegulatorMatter,
+    title="Regulator correspondence",
+    singular="Regulator matter",
+    intro=(
+        "Log everything you receive from the Information Regulator: a complaint about you, an assessment, an "
+        "information or enforcement notice, or a fine. Deadlines are tracked for you. Ignoring an enforcement notice "
+        "is a criminal offence (s103), and you have 30 days to appeal an information or enforcement notice (s97)."
+    ),
+    help_page="regulator",
+    fields=[
+        "kind", "received_on", "regulator_reference", "summary", "response_due", "status", "responded_on",
+        "actions_taken", "documents_location",
+    ],
+    columns=[
+        Column("Ref", "reference"),
+        Column("Type", "kind"),
+        Column("Received", "received_on"),
+        Column("Deadline", "response_due"),
+        Column("Status", "status", {"open": "bad", "appealed": "warn", "responded": "info", "closed": "ok"}),
+    ],
+    detail_template="compliance/regulator_detail.html",
+)
+
 TRAINING = Register(
     slug="training",
     prefix="training/",
@@ -243,7 +270,7 @@ TASKS = Register(
     list_context=task_groups,
 )
 
-REGISTERS = [ACTIVITIES, OPERATORS, RETENTION, RISKS, REQUESTS, INCIDENTS, TRAINING, TASKS]
+REGISTERS = [ACTIVITIES, OPERATORS, RETENTION, RISKS, REQUESTS, INCIDENTS, REGULATOR, TRAINING, TASKS]
 
 
 # ---------------------------------------------------------------------------
@@ -288,6 +315,13 @@ def dashboard(request):
             alerts.append(("bad", f"{req.reference} from {req.requester_name} is overdue (was due {req.due_date:%d %b %Y}).", "compliance:request_detail", req.pk))
         elif req.days_left is not None and req.days_left <= 7:
             alerts.append(("warn", f"{req.reference} from {req.requester_name} is due in {req.days_left} day(s).", "compliance:request_detail", req.pk))
+    for matter in RegulatorMatter.objects.filter(status__in=RegulatorMatter.OPEN_STATUSES):
+        if matter.is_overdue:
+            alerts.append(("bad", f"{matter}: the Regulator's deadline passed on {matter.response_due:%d %b %Y}.", "compliance:regulator_detail", matter.pk))
+        elif matter.status == "open" and matter.days_left is not None and matter.days_left <= 14:
+            alerts.append(("warn", f"{matter}: respond to the Regulator by {matter.response_due:%d %b %Y} ({matter.days_left} day(s) left).", "compliance:regulator_detail", matter.pk))
+        elif matter.status == "open" and matter.appeal_deadline and 0 <= (matter.appeal_deadline - today).days <= 14:
+            alerts.append(("warn", f"{matter}: the 30-day window to appeal to the High Court closes on {matter.appeal_deadline:%d %b %Y}.", "compliance:regulator_detail", matter.pk))
     for task in ComplianceTask.objects.filter(done_on__isnull=True, due_date__lt=today):
         alerts.append(("warn", f"Overdue task: {task.title} (due {task.due_date:%d %b %Y}).", "compliance:task_list", None))
     backup_health = backups.health()
@@ -557,7 +591,7 @@ class AuditLog(generic.ListView):
     template_name = "compliance/audit_log.html"
 
 
-EXPORT_MODELS = [CompanyProfile, ChecklistItem, Operator, ProcessingActivity, RetentionRule, DataSubjectRequest, Incident, Risk, TrainingRecord, ComplianceTask, AuditEntry]
+EXPORT_MODELS = [CompanyProfile, ChecklistItem, Operator, ProcessingActivity, RetentionRule, DataSubjectRequest, Incident, RegulatorMatter, Risk, TrainingRecord, ComplianceTask, AuditEntry]
 
 
 def export(request):

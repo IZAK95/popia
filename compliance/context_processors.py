@@ -18,6 +18,7 @@ NAVIGATION = [
     ("Day-to-day", [
         ("compliance:request_list", "Requests from people", "inbox"),
         ("compliance:incident_list", "Incidents & breaches", "shield"),
+        ("compliance:regulator_list", "Regulator correspondence", "mail"),
         ("compliance:training_list", "Training log", "users"),
         ("compliance:paia_report", "PAIA annual report", "report"),
     ]),
